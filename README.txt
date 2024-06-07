@@ -1,5 +1,5 @@
 
-## Gtd_admin - аддон только для Wow 1.12+. Предназначен для администрирования, ведения, учета progress-points (pp) игроков внутри гильдии. Автор: Casta\Madarra гильдии "Going to death" на реалме "Nordanaar" проекта wow-turtle. Email: baners@mail.ru. Discord id: 401793076663812097
+# Gtd_admin - аддон только для Wow 1.12+. Предназначен для администрирования, ведения, учета progress-points (pp) игроков внутри гильдии. Автор: Casta\Madarra гильдии "Going to death" на реалме "Nordanaar" проекта wow-turtle. Email: baners@mail.ru. Discord id: 401793076663812097
 
 ## Команды управления:
 `/gtd` - главное окно управления
