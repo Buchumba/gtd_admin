@@ -1,0 +1,203 @@
+<Ui xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="gtd_admin.lua" />
+	<Frame name="Frame1" parent="UIParent" toplevel="true" movable="true" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
+		<Size x="350" y="200" />
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" keyType="string" type="global" />
+		</KeyValues>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="BORDER">
+				<FontString inherits="GameFontHighlightLarge" font="Fonts\SKURRI_CYR.TTF" text=". : Going to Death : .">
+					<Size x="353" y="30" />
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-10" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<FontHeight val="26" />
+					<Color r="1" g="0.502" />
+					<Shadow x="1" y="1">
+						<Offset>
+							<AbsDimension x="1" y="-1" />
+						</Offset>
+						<Color />
+					</Shadow>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString inherits="GameFontNormal" text="Добавление\удаление progress-points всем, кто в рейде (даже, если offline):">
+					<Size x="219" y="28" />
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset x="-31" y="40" />
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString inherits="GameFontNormal" text="Начислить игроку">
+					<Size x="111" y="20" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT">
+							<Offset x="10" y="70" />
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="ИЛИ">
+					<Size x="62" y="20" />
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset y="5" />
+						</Anchor>
+					</Anchors>
+					<FontHeight val="24" />
+					<Color r="1" g="1" />
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox name="EnteredValue" inherits="InputBoxTemplate" letters="5">
+				<Size x="40" y="20" />
+				<Anchors>
+					<Anchor y="20" point="CENTER">
+						<Offset x="115" y="41" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						            this:SetAutoFocus(false);
+						            this:SetTextInsets(0, 8, 0, 0);
+						            this:SetNumeric();
+						            this:SetNumber(1);
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+			<Button inherits="UIPanelButtonTemplate" enableMouseClicks="true" text="Добавить">
+				<Size x="150" y="40" />
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+						<Offset x="20" y="20" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						            StaticPopup_Show("CONFIRM_ADD", EnteredValue:GetNumber())
+					</OnClick>
+				</Scripts>
+				<ButtonText font="Fonts\FRIZQT__.TTF">
+					<FontHeight val="12" />
+					<Color r="1" g="1" />
+				</ButtonText>
+			</Button>
+			<Button name="$parent_CloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="Frame1" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-10" y="-10" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+            Frame1:Hide();
+            RatingFrame:Hide()
+          </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="HelpButton" inherits="UIPanelButtonTemplate" text="?">
+				<Size x="20" y="20" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+						<Offset x="18" y="-15" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						            HelpButton_OnClick()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button inherits="UIPanelButtonTemplate" enableMouseClicks="true" text="Удалить">
+				<Size x="150" y="40" />
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+						<Offset x="-20" y="20" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						            StaticPopup_Show("CONFIRM_REMOTE", EnteredValue:GetNumber())
+					</OnClick>
+				</Scripts>
+				<ButtonText font="Fonts\FRIZQT__.TTF">
+					<FontHeight val="12" />
+					<Color r="1" g="1" />
+				</ButtonText>
+			</Button>
+			<EditBox name="EnteredName" inherits="InputBoxTemplate" autoFocus="false">
+				<Size x="100" y="32" />
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset x="-5" y="-20" />
+					</Anchor>
+				</Anchors>
+			</EditBox>
+			<Button inherits="UIPanelButtonTemplate" text="Взять с таргета">
+				<Size x="109" y="23" />
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-20" y="68" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						            GTD_SetNameFromTarget()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button inherits="UIPanelButtonTemplate" text="PP-рейтинг">
+				<Size x="75" y="23" />
+				<Anchors>
+					<Anchor point="BOTTOM">
+						<Offset y="-5" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						            GTD_OpenRatingScrollFrame()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				        Frame1_OnLoad()
+				        this:Hide()
+				        this:RegisterForDrag("LeftButton");
+				        this:SetMovable(1);
+			</OnLoad>
+			<OnDragStart>
+				        this:StartMoving();
+				        this.isMoving = true;
+			</OnDragStart>
+			<OnDragStop>
+				        this:StopMovingOrSizing();
+				        this.isMoving = false;
+			</OnDragStop>
+		</Scripts>
+	</Frame>
+</Ui>
