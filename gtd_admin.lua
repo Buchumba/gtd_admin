@@ -12,11 +12,11 @@ GlobalOperation = ""
 SortField = "pp"--сортировка по умолчанию по progress-points
 AccessInstances = {}
 
-StaticPopupDialogs["CONFIRM_ADD"] = {
-	text = "Внести указанное количество progress-points \"%s\" всем участникам рейда?",
-	button1 = "Да, внести!",
+StaticPopupDialogs["CONFIRM_ADD"] = {	
+	text =  "|cffa5ffb4Внести указанное количество progress-points|r `|cff00ff7f%s|r` |cffa5ffb4?|r",
+	button1 = "|cffa5ffb4Да, внести!|r",
 	button2 = "Нет, не нужно!",
-	OnAccept = function()
+	OnAccept = function()		
 		Button1_OnClick('add')
 	end,
 	timeout = 0,
@@ -26,8 +26,8 @@ StaticPopupDialogs["CONFIRM_ADD"] = {
 }
 
 StaticPopupDialogs["CONFIRM_REMOTE"] = {
-	text = "Снять указанное количество progress-points \"%s\" у всех участников рейда?",
-	button1 = "Да, удалить!",
+	text = "|cffffa5a5Снять указанное количество progress-points|r |cffff0000%s|r |cffffa5a5?|r",
+	button1 = "|cffffa5a5Да, удалить!|r",
 	button2 = "Нет, не нужно!",
 	OnAccept = function()
 		Button1_OnClick('remote')
@@ -39,6 +39,9 @@ StaticPopupDialogs["CONFIRM_REMOTE"] = {
 }
 
 function Frame1_OnLoad()
+	--установим массив разрешенных зон для проверки прогресс-рола, где ключ индекс и значение = название текущей локации
+	GTD_SetZones()
+
 	SLASH_GTD1 = "/gtd";	
 	SlashCmdList["GTD"] = function(msg)		
 		if msg == "help" then
@@ -403,6 +406,10 @@ local _allZones = {
 	}
 
 function GTD_SetZones()
+  if table.getn(AccessInstances) > 0 then  	
+  	return false	
+	end
+
   local i = GetGuildInfoText()
   if i then
     if i == "" then
@@ -418,20 +425,18 @@ function GTD_SetZones()
   			end
 			end
 	  	local _asd = GTD_Split(_ids,",")
-		  local _countArray = table.getn(_asd);	 	  		  	
+		  local _countArray = table.getn(_asd)
 		  for x = 1, _countArray do	  	 	
 		   	table.insert(AccessInstances, _allZones[tonumber(_asd[x])])	  	 	
 	  	end  		  	
 		end		
 	end
-end   
-
-GTD_SetZones()--установим массив разрешенных зон для проверки прогресс-рола, где ключ индекс и значение = название текущей локации
+end
 
 --булевая проверка текущей локации из разрешенного массива локаций
 function GTD_IsZone()
-	local _accessInstances = AccessInstances
-	for x = 1, table.getn(_accessInstances) do
+	local _accessInstances = AccessInstances		
+	for x = 1, table.getn(_accessInstances) do		
 		if _accessInstances[x] == GetRealZoneText() then
 			return true
 		end
@@ -444,34 +449,42 @@ end
 --то появится сообщение в системном чате для админа.
 local f = CreateFrame("frame")
 f:RegisterEvent("CHAT_MSG_SYSTEM")
-f:SetScript("OnEvent", function()	
-  if event == "CHAT_MSG_SYSTEM" and GTD_IsZone() then    
-    local _digits  = GTD_GetDigitsF()
-    local _message = arg1
-    local _, _, _author, _rollResult, _rollMin, _rollMax = string.find(_message, "(.+) rolls (%d+) %((%d+)-(%d+)%)")
-    if _rollMin ~= nil and _rollMax ~= nil then
-    	_rollMin = ToInteger(_rollMin)
-  	 	_rollMax = ToInteger(_rollMax)
-  	end
-    if _author then
-	    local _searchRaider = 0	    
-	    for y = 1, GetNumGuildMembers(1) do
-				local _name, _rank, _rankIndex, _level, _class, _zone, _note, _officernote, _online, _status = GetGuildRosterInfo(y);				
-				local _pp = tonumber(_officernote)				
-				if _level == 60 and _author == _name then
-					local _getRaiderMin = 1
-					local _getRaiderMax = 100
-					if type(_pp) == "number" and _pp > 1 then
-						_getRaiderMin = math.floor(_pp * _digits[1])
-						_getRaiderMax = math.floor(_pp * _digits[2] + 100)
+f:SetScript("OnEvent", function()
+	if event == "CHAT_MSG_SYSTEM" then
+		GTD_SetZones()
+
+		if GTD_IsZone() then    
+			local _digits  = GTD_GetDigitsF()
+			local _message = arg1
+			local _, _, _author, _rollResult, _rollMin, _rollMax = string.find(_message, "(.+) rolls (%d+) %((%d+)-(%d+)%)")
+
+			if _rollMin ~= nil and _rollMax ~= nil then
+				_rollMin = ToInteger(_rollMin)
+				_rollMax = ToInteger(_rollMax)
+			end
+
+			if _author then
+				local _searchRaider = 0	    
+				for y = 1, GetNumGuildMembers(1) do
+					local _name, _rank, _rankIndex, _level, _class, _zone, _note, _officernote, _online, _status = GetGuildRosterInfo(y);				
+					local _pp = tonumber(_officernote)				
+					if _level == 60 and _author == _name then
+						local _getRaiderMin = 1
+						local _getRaiderMax = 100
+						if type(_pp) == "number" and _pp > 1 then
+							_getRaiderMin = math.floor(_pp * _digits[1])
+							_getRaiderMax = math.floor(_pp * _digits[2] + 100)
+						end		
+						if (_rollMax > 100 or (_rollMin > 1 and _rollMax <= 100)) and (_getRaiderMin ~= _rollMin or _rollMax ~= _getRaiderMax) then
+							local send_text = "|cFFff8686Roll не соотв. данным для игрока `".. _name .."`. Доступный диапазон для него: ".. _getRaiderMin .. "-" .. _getRaiderMax .. "|r"
+							SendChatMessage(send_text, "WHISPER", nil, UnitName("player"));							
+							DEFAULT_CHAT_FRAME:AddMessage(send_text);
+						end	
 					end		
-					if (_rollMax > 100 or (_rollMin > 1 and _rollMax <= 100)) and (_getRaiderMin ~= _rollMin or _rollMax ~= _getRaiderMax) then
-							DEFAULT_CHAT_FRAME:AddMessage("|cFFFF4f4fПодозрение в нарушении прогресс-рола игроком `".. _name .."` Модификация аддона или самовольный бросок в неразрешенном диапазоне.|r Разрешенный диапазон: ".. _getRaiderMin .. "-" .. _getRaiderMax );
-					end			
 				end			
 			end	    
-    end
-  end
+		end 
+	end 
 end)
 
 local function GTD_GetItemLinkData(unitID, slotId)	

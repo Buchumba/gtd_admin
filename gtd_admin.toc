@@ -4,5 +4,5 @@
 ## Author: Casta (guild "Going to Death"), project: Turtle-WOW, site: www.goingtodeath.ru, mail: baners@mail.ru
 ## Interface: 11200
 
+gtd_admin.lua
 gtd_admin.xml
-libs\AceLibrary\AceLibrary.lua

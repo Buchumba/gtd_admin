@@ -1,5 +1,4 @@
-<Ui xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="gtd_admin.lua" />
+<Ui xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/">	
 	<Frame name="Frame1" parent="UIParent" toplevel="true" movable="true" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
 		<Size x="350" y="200" />
 		<Anchors>
@@ -184,8 +183,8 @@
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnLoad inherit="prepend">
-				        Frame1_OnLoad()
+			<OnLoad inherit="append">
+				        Frame1_OnLoad()				        
 				        this:Hide()
 				        this:RegisterForDrag("LeftButton");
 				        this:SetMovable(1);
