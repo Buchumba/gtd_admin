@@ -475,8 +475,9 @@ f:SetScript("OnEvent", function()
 							_getRaiderMin = math.floor(_pp * _digits[1])
 							_getRaiderMax = math.floor(_pp * _digits[2] + 100)
 						end		
-						if (_rollMax > 100 or (_rollMin > 1 and _rollMax <= 100)) and (_getRaiderMin ~= _rollMin or _rollMax ~= _getRaiderMax) then
-							local send_text = "|cFFff8686Roll не соотв. данным для игрока `".. _name .."`. Доступный диапазон для него: ".. _getRaiderMin .. "-" .. _getRaiderMax .. "|r"
+						if (_rollMax > 100 or (_rollMin > 1 and _rollMax <= 100)) 
+							and (_getRaiderMin ~= _rollMin or _rollMax ~= _getRaiderMax) then
+							local send_text = "|cFFff3939 Интервал рола: " .. _rollMin .. "-" .. _rollMax .. "|r |cFFff8686 не соотв. для игрока `".. _name .."`. Его доступный диапазон по PP:|r |cFFFFFFFF".. _getRaiderMin .. "-" .. _getRaiderMax .."|r"
 							SendChatMessage(send_text, "WHISPER", nil, UnitName("player"));							
 							DEFAULT_CHAT_FRAME:AddMessage(send_text);
 						end	
