@@ -5,7 +5,7 @@
 -- ключ массива - Альт игрока в момент убийства босса, main - имя игрока гильдии Going to Death, 
 -- которому начисляется PP и желательно вне текущего рейда.
 local nicknameChanges = {}
-nicknameChanges["Madarra"] = {main = 'Casta', status = nil}--для отладки
+--nicknameChanges["Madarra"] = {main = 'Casta', status = nil}--для отладки
 --//конец блока записи замен
 
 GlobalOperation = ""
