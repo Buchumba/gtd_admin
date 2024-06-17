@@ -11,6 +11,7 @@ local nicknameChanges = {}
 GlobalOperation = ""
 SortField = "pp"--сортировка по умолчанию по progress-points
 AccessInstances = {}
+LastEnteredValue = 0
 
 StaticPopupDialogs["CONFIRM_ADD"] = {	
 	text =  "|cffa5ffb4Внести указанное количество progress-points|r `|cff00ff7f%s|r` |cffa5ffb4?|r",
@@ -63,10 +64,11 @@ end
 function Button1_OnClick(operation)	
 	GTD_setStatusesOfNil();
 	GlobalOperation = operation;
-	local enteredValue = EnteredValue:GetNumber();    
-	local enteredName = EnteredName:GetText();
-	local _isModifyNote = nil;
-	local _getNumRaidMembers = GetNumRaidMembers();
+	local enteredValue = EnteredValue:GetNumber()
+	LastEnteredValue = EnteredValue:GetNumber()    
+	local enteredName = EnteredName:GetText()
+	local _isModifyNote = nil
+	local _getNumRaidMembers = GetNumRaidMembers()
     if _getNumRaidMembers == 0 then
 		print("Вы не в рейде!")
 	elseif enteredName ~= "" then
@@ -453,7 +455,8 @@ f:SetScript("OnEvent", function()
 	if event == "CHAT_MSG_SYSTEM" then
 		GTD_SetZones()
 
-		if GTD_IsZone() then    
+		if GTD_IsZone() then   
+
 			local _digits  = GTD_GetDigitsF()
 			local _message = arg1
 			local _, _, _author, _rollResult, _rollMin, _rollMax = string.find(_message, "(.+) rolls (%d+) %((%d+)-(%d+)%)")
@@ -476,10 +479,12 @@ f:SetScript("OnEvent", function()
 							_getRaiderMax = math.floor(_pp * _digits[2] + 100)
 						end		
 						if (_rollMax > 100 or (_rollMin > 1 and _rollMax <= 100)) 
-							and (_getRaiderMin ~= _rollMin or _rollMax ~= _getRaiderMax) then
-							local send_text = "|cFFff3939 Интервал рола: " .. _rollMin .. "-" .. _rollMax .. "|r |cFFff8686 не соотв. для игрока `".. _name .."`. Его доступный диапазон по PP:|r |cFFFFFFFF".. _getRaiderMin .. "-" .. _getRaiderMax .."|r"
-							SendChatMessage(send_text, "WHISPER", nil, UnitName("player"));							
-							DEFAULT_CHAT_FRAME:AddMessage(send_text);
+							and (_getRaiderMin ~= _rollMin or _rollMax ~= _getRaiderMax) then							
+							if (_rollMin + 1) ~= _getRaiderMin or (_rollMax + 1) ~= _getRaiderMax and _rollMax > _getRaiderMax then --если запаздывание больше на 1 очко чем можно, то минус один, наоборот - плюс один					
+								local send_text =  "|cFFff3939 Интервал рола: " .. _rollMin .. "-" .. _rollMax .. "|r |cFFff8686 не соотв. для игрока `".. _name .."`. Его доступный диапазон по PP:|r |cFFFFFFFF".. _getRaiderMin .. "-" .. _getRaiderMax .."|r"
+								SendChatMessage(send_text, "WHISPER", nil, UnitName("player"));							
+								DEFAULT_CHAT_FRAME:AddMessage(send_text);
+							end
 						end	
 					end		
 				end			
