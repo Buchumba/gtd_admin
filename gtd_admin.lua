@@ -482,7 +482,7 @@ f:SetScript("OnEvent", function()
 							and (_getRaiderMin ~= _rollMin or _rollMax ~= _getRaiderMax) then							
 							if ((_rollMin - 1) ~= _getRaiderMin or (_rollMax - 1) ~= _getRaiderMax) and _rollMax > _getRaiderMax then --если запаздывание больше на 1 очко чем можно, то минус один, наоборот - плюс один					
 								local send_text =  "|cFFff3939 Интервал рола: " .. _rollMin .. "-" .. _rollMax .. "|r |cFFff8686 не соотв. для игрока `".. _name .."`. Его доступный диапазон по PP:|r |cFFFFFFFF".. _getRaiderMin .. "-" .. _getRaiderMax .."|r"
-								SendChatMessage(send_text, "WHISPER", nil, UnitName("player"));							
+								--SendChatMessage(send_text, "WHISPER", nil, UnitName("player"));							
 								DEFAULT_CHAT_FRAME:AddMessage(send_text);
 							end
 						end	

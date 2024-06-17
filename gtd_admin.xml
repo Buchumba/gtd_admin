@@ -1,6 +1,6 @@
 <Ui xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/">	
 	<Frame name="Frame1" parent="UIParent" toplevel="true" movable="true" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
-		<Size x="350" y="200" />
+		<Size x="350" y="190" />
 		<Anchors>
 			<Anchor point="CENTER" />
 		</Anchors>
@@ -19,7 +19,7 @@
 			</EdgeSize>
 		</Backdrop>
 		<Layers>
-			<Layer level="BORDER">
+			<Layer level="OVERLAY">
 				<FontString inherits="GameFontHighlightLarge" font="Fonts\SKURRI_CYR.TTF" text=". : Going to Death : .">
 					<Size x="353" y="30" />
 					<Anchors>
@@ -51,8 +51,8 @@
 				<FontString inherits="GameFontNormal" text="Начислить игроку">
 					<Size x="111" y="20" />
 					<Anchors>
-						<Anchor point="BOTTOMLEFT">
-							<Offset x="10" y="70" />
+						<Anchor point="CENTER">
+							<Offset x="-113" y="-5" />
 						</Anchor>
 					</Anchors>
 				</FontString>
@@ -60,11 +60,20 @@
 					<Size x="62" y="20" />
 					<Anchors>
 						<Anchor point="CENTER">
-							<Offset y="5" />
+							<Offset y="15" />
 						</Anchor>
 					</Anchors>
 					<FontHeight val="24" />
 					<Color r="1" g="1" />
+				</FontString>
+				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="Дублировать сообщения через WISP">
+					<Size x="175" y="20" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT">
+							<Offset x="22" y="0" />
+						</Anchor>
+					</Anchors>					
+					
 				</FontString>
 			</Layer>
 		</Layers>
@@ -88,8 +97,8 @@
 			<Button inherits="UIPanelButtonTemplate" enableMouseClicks="true" text="Добавить">
 				<Size x="150" y="40" />
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
-						<Offset x="20" y="20" />
+					<Anchor point="CENTER" relativePoint="LEFT">
+						<Offset x="90" y="-50" />
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -112,9 +121,9 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-            Frame1:Hide();
-            RatingFrame:Hide()
-          </OnClick>
+  			    	    Frame1:Hide();
+            			RatingFrame:Hide()
+          			</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="HelpButton" inherits="UIPanelButtonTemplate" text="?">
@@ -147,19 +156,20 @@
 					<Color r="1" g="1" />
 				</ButtonText>
 			</Button>
+
 			<EditBox name="EnteredName" inherits="InputBoxTemplate" autoFocus="false">
 				<Size x="100" y="32" />
 				<Anchors>
 					<Anchor point="CENTER">
-						<Offset x="-5" y="-20" />
+						<Offset x="-5" y="-5" />
 					</Anchor>
 				</Anchors>
-			</EditBox>
+			</EditBox>	
 			<Button inherits="UIPanelButtonTemplate" text="Взять с таргета">
 				<Size x="109" y="23" />
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="-20" y="68" />
+					<Anchor point="CENTER">
+						<Offset x="105" y="-5" />
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -167,7 +177,7 @@
 						            GTD_SetNameFromTarget()
 					</OnClick>
 				</Scripts>
-			</Button>
+			</Button>		
 			<Button inherits="UIPanelButtonTemplate" text="PP-рейтинг">
 				<Size x="75" y="23" />
 				<Anchors>
@@ -181,11 +191,25 @@
 					</OnClick>
 				</Scripts>
 			</Button>
+            <Button name="MessageToWisper" inherits="UIPanelButtonTemplate" text="V">
+				<Size x="25" y="25" />
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset y="0" x="-22" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						            
+					</OnClick>
+				</Scripts>
+			</Button>
+
 		</Frames>
 		<Scripts>
 			<OnLoad inherit="append">
 				        Frame1_OnLoad()				        
-				        this:Hide()
+				        --this:Hide()
 				        this:RegisterForDrag("LeftButton");
 				        this:SetMovable(1);
 			</OnLoad>
