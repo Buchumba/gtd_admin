@@ -12,6 +12,8 @@ GlobalOperation = ""
 SortField = "pp"--сортировка по умолчанию по progress-points
 AccessInstances = {}
 LastEnteredValue = 0
+local StrOptionYes = "да"
+local StrOptionNo = "нет"
 
 StaticPopupDialogs["CONFIRM_ADD"] = {	
 	text =  "|cffa5ffb4Внести указанное количество progress-points|r `|cff00ff7f%s|r` |cffa5ffb4?|r",
@@ -41,10 +43,10 @@ StaticPopupDialogs["CONFIRM_REMOTE"] = {
 
 function Frame1_OnLoad()
 	--установим массив разрешенных зон для проверки прогресс-рола, где ключ индекс и значение = название текущей локации
-	GTD_SetZones()
-
+	GTD_SetZones()	
 	SLASH_GTD1 = "/gtd";	
 	SlashCmdList["GTD"] = function(msg)		
+		GTDA_StartSettings()
 		if msg == "help" then
 			GTD_Help();		
 		else
@@ -106,8 +108,8 @@ function Button1_OnClick(operation)
 		--анонс рейду операций начисления и списания
 		if _isModifyNote == 1 then
 			local _curText = ""	
-			if operation == "add" then
-				_curText = "Всем кто в рейде начисляется " .. enteredValue .. " progress-point!";		
+			if operation == "add" then				
+				_curText = GTDA_GetTextAnnoAddedPP(enteredValue)
 			elseif operation == "remote" then
 				_curText = "У всех кто в рейде списывается " .. enteredValue .. " progress-point!";		
 			end			
@@ -119,14 +121,18 @@ function Button1_OnClick(operation)
 			end
 
 			SendChatMessage("\124cff00ff00\124Hitem: 19:0:0:0:0:0:0:0\124h".. _curText .."\124h\124r", _raidChat)					
-			SendChatMessage(_curText, "WHISPER", nil, UnitName("player"))
-			--SendChatMessage(_curText, "WHISPER", nil, "Malyutych")
+			if GTDA_WISPER_PP == 1 then
+				SendChatMessage(_curText, "WHISPER", nil, UnitName("player"))		
+			end	
 		end
-	end
-	
+	end	
 	GlobalOperation = "";
 	Frame1:Hide();
 	RatingFrame:Hide()
+end
+
+function GTDA_GetTextAnnoAddedPP(pp)
+	return "Всем кто в рейде начисляется " .. tostring(pp) .. " progress-point!"
 end
 
 function GTD_Help()
@@ -243,8 +249,9 @@ function GTD_insertPointOneUser(enteredValue, enteredName, operation)
 		else
 			print("\124cff00ff88\124Hitem: 19:0:0:0:0:0:0:0\124h".. _curText .."\124h\124r")
 		end
-		
-		SendChatMessage(_curText, "WHISPER", nil, UnitName("player"));	
+		if GTDA_WISPER_PP == 1 then
+			SendChatMessage(_curText, "WHISPER", nil, UnitName("player"));
+		end	
 	
 	else 
 		print("`" .. tostring(enteredName) .. "` не найден или не состоит в гильдии!")
@@ -284,7 +291,7 @@ RatingFrame:SetBackdrop({
 	  insets={left=11, right=12, top=12, bottom=11}
 })
 
-RatingFrame:SetWidth(190)
+RatingFrame:SetWidth(250)
 RatingFrame:SetHeight(300)
 RatingFrame:SetPoint("CENTER", -200, 0)
 
@@ -481,8 +488,10 @@ f:SetScript("OnEvent", function()
 						if (_rollMax > 100 or (_rollMin > 1 and _rollMax <= 100)) 
 							and (_getRaiderMin ~= _rollMin or _rollMax ~= _getRaiderMax) then							
 							if ((_rollMin - 1) ~= _getRaiderMin or (_rollMax - 1) ~= _getRaiderMax) and _rollMax > _getRaiderMax then --если запаздывание больше на 1 очко чем можно, то минус один, наоборот - плюс один					
-								local send_text =  "|cFFff3939 Интервал рола: " .. _rollMin .. "-" .. _rollMax .. "|r |cFFff8686 не соотв. для игрока `".. _name .."`. Его доступный диапазон по PP:|r |cFFFFFFFF".. _getRaiderMin .. "-" .. _getRaiderMax .."|r"
-								--SendChatMessage(send_text, "WHISPER", nil, UnitName("player"));							
+								local send_text = GTDA_GetTextAnnoAbuse(_rollMin, _rollMax, _name, _getRaiderMin, _getRaiderMax) 
+								if GTDA_WISPER_ABUSE == 1 then
+									SendChatMessage(send_text, "WHISPER", nil, UnitName("player"));
+								end
 								DEFAULT_CHAT_FRAME:AddMessage(send_text);
 							end
 						end	
@@ -492,6 +501,10 @@ f:SetScript("OnEvent", function()
 		end 
 	end 
 end)
+
+function GTDA_GetTextAnnoAbuse(rollmin, rollmax, raider, getmin, getmax)
+	return "|cFFff3939 Интервал рола: " .. rollmin .. "-" .. rollmax .. "|r |cFFff8686 не соотв. для игрока `".. raider .."`. Его доступный диапазон по PP:|r |cFFFFFFFF".. getmin .. "-" .. getmax .."|r"
+end
 
 local function GTD_GetItemLinkData(unitID, slotId)	
 	local itemLink = nil
@@ -711,8 +724,59 @@ pre:SetScript("OnEvent", function()
   end
 end)
 
+function GTDA_CheckValue(GlobalVariable)	
+	if not GlobalVariable or GlobalVariable == StrOptionNo then		
+		return nil 
+	end	
+	return true
+end
 
+function GTDA_GetTitleValue(GlobalVariable)
+	if GlobalVariable == 1 then		
+		return StrOptionYes
+	else
+		return StrOptionNo
+	end
+end
 
+function GTDA_SetWisperPP()		
+	local v = this:GetText()	
+	if not GTDA_CheckValue(v) then		
+		GTDA_WISPER_PP = 1		
+	else		
+		GTDA_WISPER_PP = 0		
+	end
+	this:SetText(GTDA_GetTitleValue(GTDA_WISPER_PP))
+end
 
+function GTDA_SetWisperAbuse()		
+	local v = this:GetText()	
+	if not GTDA_CheckValue(v) then		
+		GTDA_WISPER_ABUSE = 1		
+	else		
+		GTDA_WISPER_ABUSE = 0		
+	end
+	this:SetText(GTDA_GetTitleValue(GTDA_WISPER_ABUSE))
+end
 
+function GTDA_StartSettings()
+	MessageToWisperPP:SetText(GTDA_GetTitleValue(GTDA_WISPER_PP))
+	MessageToWisperAbuse:SetText(GTDA_GetTitleValue(GTDA_WISPER_ABUSE))	
+end
+
+function GTDA_DebugOfWispers()
+	if GTDA_WISPER_PP == 1 then
+		local send_text1 = GTDA_GetTextAnnoAddedPP(2)
+		SendChatMessage(send_text1, "WHISPER", nil, UnitName("player"))
+	else 
+		DEFAULT_CHAT_FRAME:AddMessage("Wips об начислении pp не включен!", 1,1,0)
+	end
+
+	if GTDA_WISPER_ABUSE == 1 then
+		local send_text2 = GTDA_GetTextAnnoAbuse(134, 234, "NickNameRaider", 45, 145)
+		SendChatMessage(send_text2, "WHISPER", nil, UnitName("player"));
+	else 
+		DEFAULT_CHAT_FRAME:AddMessage("Wips об уловках игроков не включен!", 1,1,0)
+	end
+end
 

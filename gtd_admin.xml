@@ -66,7 +66,7 @@
 					<FontHeight val="24" />
 					<Color r="1" g="1" />
 				</FontString>
-				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="|cFFFF00FFWisp себе при начислении pp:">
+				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="|cFFff93ffWisp себе при начислении pp:">
 					<Size x="185" y="20" />
 					<Anchors>
 						<Anchor point="CENTER" relativePoint="LEFT">
@@ -74,7 +74,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="|cFFFF00FFWisp себе при уловках игроков:">
+				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="|cFFff93ffWisp себе при уловках игроков:">
 					<Size x="185" y="20" />
 					<Anchors>
 						<Anchor point="CENTER" relativePoint="RIGHT">
@@ -185,11 +185,11 @@
 					</OnClick>
 				</Scripts>
 			</Button>		
-			<Button inherits="UIPanelButtonTemplate" text="PP-рейтинг">
-				<Size x="75" y="23" />
+			<Button inherits="UIPanelButtonTemplate" text="PP-Рейтинг">
+				<Size x="160" y="23" />
 				<Anchors>
-					<Anchor point="BOTTOM">
-						<Offset y="-5" />
+					<Anchor point="BOTTOMLEFT">
+						<Offset x="15" y="-2" />
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -198,7 +198,20 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-            <Button name="MessageToWisperPP" inherits="UIPanelButtonTemplate" text="да">
+			<Button inherits="UIPanelButtonTemplate" text="|cFFff93ffКак выглядят Wisp?">
+				<Size x="160" y="23" />
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-15" y="-2" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						GTDA_DebugOfWispers()     
+					</OnClick>
+				</Scripts>
+			</Button>
+            <Button name="MessageToWisperPP" inherits="UIPanelButtonTemplate" text="">
 				<Size x="24" y="22" />
 				<Anchors>
 					<Anchor point="CENTER" relativePoint="LEFT">
@@ -207,11 +220,11 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						            
+						GTDA_SetWisperPP()         
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="MessageToWisperAbuse" inherits="UIPanelButtonTemplate" text="нет">
+			<Button name="MessageToWisperAbuse" inherits="UIPanelButtonTemplate" text="">
 				<Size x="24" y="22" />
 				<Anchors>
 					<Anchor point="CENTER" relativePoint="RIGHT">
@@ -220,7 +233,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						            
+						 GTDA_SetWisperAbuse()           
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -229,7 +242,7 @@
 		<Scripts>
 			<OnLoad inherit="append">
 				        Frame1_OnLoad()				        
-				        --this:Hide()
+				        this:Hide()
 				        this:RegisterForDrag("LeftButton");
 				        this:SetMovable(1);
 			</OnLoad>
