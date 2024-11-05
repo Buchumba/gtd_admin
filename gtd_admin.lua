@@ -291,7 +291,7 @@ RatingFrame:SetBackdrop({
 	  insets={left=11, right=12, top=12, bottom=11}
 })
 
-RatingFrame:SetWidth(250)
+RatingFrame:SetWidth(270)
 RatingFrame:SetHeight(300)
 RatingFrame:SetPoint("CENTER", -200, 0)
 
@@ -304,7 +304,7 @@ scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
 eb = CreateFrame("EditBox", nil, scrollFrame)
 eb:SetMultiLine(true)
 eb:SetFontObject(ChatFontNormal)
-eb:SetWidth(190)
+eb:SetWidth(230)
 
 scrollFrame:SetScrollChild(eb)
 
@@ -329,7 +329,7 @@ function GTD_GetListRaiting()
 	for y = 1, GetNumGuildMembers(1) do
 		local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(y);
 		if type(tonumber(officernote)) == "number" then
-			table.insert(players, {name, tonumber(officernote)})			
+			table.insert(players, {name, tonumber(officernote), rank})			
 		end			
 	end
    
@@ -355,9 +355,9 @@ function GTD_GetListRaiting()
 		end
 		_max = math.floor(tempPlayers[x][2]*formula[2]+100)
 		if SortField == "pp" then
-			textRating = string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tostring(_min), tostring(_max)) .. textRating
+			textRating = string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
 		elseif SortField == "name" then
-			textRating = string.format("|cff00ff7f%s|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating
+			textRating = string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating
 		end		
 	end
 
