@@ -411,7 +411,8 @@ local _allZones = {
 		"Blackwing Lair",--4
 		"Ahn'Qiraj",--5
 		"Naxxramas",--6
-		"Tel'Abim",--7 debug only		
+		"Tel'Abim",--7 debug only
+		"The Upper Necropolis"--8 (Сапфирон и Кель)
 	}
 
 function GTD_SetZones()
