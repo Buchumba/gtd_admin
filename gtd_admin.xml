@@ -95,10 +95,10 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						            this:SetAutoFocus(false);
-						            this:SetTextInsets(0, 8, 0, 0);
-						            this:SetNumeric();
-						            this:SetNumber(1);
+						this:SetAutoFocus(false);
+						this:SetTextInsets(0, 8, 0, 0);
+						this:SetNumeric();
+						this:SetNumber(1);
 					</OnLoad>
 				</Scripts>
 			</EditBox>
@@ -111,7 +111,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						            StaticPopup_Show("CONFIRM_ADD", EnteredValue:GetNumber())
+						StaticPopup_Show("CONFIRM_ADD", EnteredValue:GetNumber())
 					</OnClick>
 				</Scripts>
 				<ButtonText font="Fonts\FRIZQT__.TTF">
@@ -128,7 +128,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						            StaticPopup_Show("CONFIRM_REMOTE", EnteredValue:GetNumber())
+						StaticPopup_Show("CONFIRM_REMOTE", EnteredValue:GetNumber())
 					</OnClick>
 				</Scripts>
 				<ButtonText font="Fonts\FRIZQT__.TTF">
@@ -161,7 +161,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						            HelpButton_OnClick()
+						HelpButton_OnClick()
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -182,7 +182,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						            GTD_SetNameFromTarget()
+						GTDA_SetNameFromTarget()
 					</OnClick>
 				</Scripts>
 			</Button>		
@@ -195,7 +195,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						            GTD_OpenRatingScrollFrame()
+						GTDA_OpenRatingScrollFrame()
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -242,18 +242,18 @@
 		</Frames>
 		<Scripts>
 			<OnLoad inherit="append">
-				        Frame1_OnLoad()				        
-				        this:Hide()
-				        this:RegisterForDrag("LeftButton");
-				        this:SetMovable(1);
+				Frame1_OnLoad()				        
+				this:Hide()
+				this:RegisterForDrag("LeftButton");
+				this:SetMovable(1);
 			</OnLoad>
 			<OnDragStart>
-				        this:StartMoving();
-				        this.isMoving = true;
+				this:StartMoving();
+				this.isMoving = true;
 			</OnDragStart>
 			<OnDragStop>
-				        this:StopMovingOrSizing();
-				        this.isMoving = false;
+				this:StopMovingOrSizing();
+				this.isMoving = false;
 			</OnDragStop>
 		</Scripts>
 	</Frame>

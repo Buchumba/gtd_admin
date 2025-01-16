@@ -201,7 +201,7 @@ function GTD_customOperation(msg)
 end
 
 --ввод в поле *имя* имя игрока с таргета
-function GTD_SetNameFromTarget()
+function GTDA_SetNameFromTarget()
 	local _name = UnitName("target")
 	if _name ~= nil and UnitIsPlayer("target") == 1 then
 		EnteredName:SetText(tostring(_name))		
@@ -322,24 +322,24 @@ scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)]]
 --конец фрейма
 
 --открытие или закрытие окна рейтинга
-function GTD_OpenRatingScrollFrame()	
+function GTDA_OpenRatingScrollFrame()	
 	if RatingFrame and RatingFrame:IsShown() then
 		RatingFrame:Hide()
 	else
-		GTD_GetListRaiting()		
+		GTDA_GetListRaiting()		
 		RatingFrame:Show()
 	end	
 end
 
 --формирование данный рейтинга игроков гильдии
-function GTD_GetListRaiting()
+function GTDA_GetListRaiting()
 	local formula = GTD_GetDigitsF()
 	local f, _, _ = GameFontNormal:GetFont() 	
 
 
 
 	--блок инициализации фрейма рейтинга
-	RatingFrame = CreateFrame("Frame", "ratingFrame", UIParent)
+	RatingFrame = CreateFrame("Frame", "ratingFrame", Frame1)
 	RatingFrame:SetBackdrop({
 		  bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", 
 		  edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", 
@@ -349,16 +349,13 @@ function GTD_GetListRaiting()
 
 	RatingFrame:SetWidth(270)
 	RatingFrame:SetHeight(300)
-	RatingFrame:SetPoint("CENTER", 0, 0)
+	RatingFrame:SetPoint("TOPLEFT", -265, 0)
 	RatingFrame:SetMovable(true)
 	RatingFrame:EnableMouse(true)
 	RatingFrame:RegisterForDrag("LeftButton")
 	RatingFrame:SetScript("OnDragStart", function() this:StartMoving() end)
 	RatingFrame:SetScript("OnDragStop", function() this:StopMovingOrSizing()end)
 	RatingFrame:Hide()
-
-
-
 
 	local scrollFrame = CreateFrame("ScrollFrame", "scrollFrame", RatingFrame, "UIPanelScrollFrameTemplate")
 	scrollFrame:SetPoint("TOPLEFT", 13, -13)
@@ -382,11 +379,9 @@ function GTD_GetListRaiting()
 	local tempPlayers = {}
 	tempPlayers = players
 	if SortField == nil or SortField == "pp" then
-		table.sort(tempPlayers, function(a, b) return a[2] < b[2] end)
-		
+		table.sort(tempPlayers, function(a, b) return a[2] < b[2] end)	-- 1pp < 40pp	
 	elseif SortField == "name" then
-		table.sort(tempPlayers, function(a, b) return a[1] > b[1] end)
-		
+		table.sort(tempPlayers, function(a, b) return a[1] < b[1] end)	-- A < Z
 	end
     
 	local countString = table.getn(tempPlayers)
