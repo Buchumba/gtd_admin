@@ -362,9 +362,9 @@ function GTDA_GetListRaiting()
 	scrollFrame:SetPoint("BOTTOM", 0, 11)
 	scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
 
-	local eb = CreateFrame("Frame", nil, scrollFrame)
-	--eb:SetMultiLine(true)
-	--eb:SetFontObject(ChatFontNormal)
+	local eb = CreateFrame("Editbox", nil, scrollFrame)
+	eb:SetMultiLine(true)
+	eb:SetFontObject(ChatFontNormal)
 	eb:SetWidth(230)
 	
 	local players = {}
@@ -396,21 +396,20 @@ function GTDA_GetListRaiting()
 		end
 		_max = math.floor(tempPlayers[x][2]*formula[2]+100)
 		
-		local ppRow = eb:CreateFontString("fontStr"..(x), "OVERLAY")           
-      ppRow:SetWidth(0)
-      ppRow:SetHeight(20)  
-      ppRow:SetFont(f, 12)
-      ppRow:SetTextColor(1, .8, 0)
-      ppRow:ClearAllPoints()    
-      ppRow:SetPoint("TOPLEFT", eb, 5, x*-15)    
+		--[[local ppRow = eb:CreateFontString("fontStr"..(x), "OVERLAY")           
+    ppRow:SetWidth(0)
+    ppRow:SetHeight(20)  
+    ppRow:SetFont(f, 12)
+    ppRow:SetTextColor(1, .8, 0)
+    ppRow:ClearAllPoints()    
+    ppRow:SetPoint("TOPLEFT", eb, 5, x*-15)]]    
+		
 		if SortField == "pp" then
-      ppRow:SetText(string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
-			)       
-			--textRating = string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
+      --ppRow:SetText(string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating)       
+			textRating = string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
 		elseif SortField == "name" then
-			--textRating = string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating
-			ppRow:SetText(string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating
-			)
+			textRating = string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating
+			--ppRow:SetText(string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating)
 		end		
 	end
 
@@ -420,7 +419,7 @@ function GTDA_GetListRaiting()
 		SortField = "pp"
 	end
 	--запись рейтинга во фрейм скроллинга
-	--eb:SetText(textRating)	
+	eb:SetText(textRating)	
 	scrollFrame:SetScrollChild(eb)
 end
 
