@@ -2,10 +2,13 @@
 -- Create Date : 11/14/2023 12:29:49 AM
 
 -- место для записи замен в 2х мерный массив
--- ключ массива - Альт игрока в момент убийства босса, main - имя игрока гильдии Going to Death, 
--- которому начисляется PP и желательно вне текущего рейда.
+-- ключ массива - Альт игрока в момент убийства босса, 
+-- main - имя игрока гильдии Going to Death (может быть nil, если начислсять игроку не хотим в рейде), 
+-- которому начисляется PP. Могут быть в одном рейде альт и мейн, но очки только на мейна перейдут.
+-- status: рабочая настройка в позиции nil.
+-- raidAnno: Оповещать (true) или не оповещать (nil) рейд о перекидывании очков.
 local nicknameChanges = {}
---nicknameChanges["Madarra"] = {main = 'Casta', status = nil}--для отладки
+--nicknameChanges["Terma"] = {main = 'Wartips', status = nil, raidAnno = true}--для отладки
 --//конец блока записи замен
 
 GlobalOperation = ""
@@ -159,7 +162,9 @@ function GTD_usersChanges(nickname)
 					_anno = "удалено у";
 				end
 				nicknameChanges[i].status = 1;
-				SendChatMessage("\124cff99ff00\124Hitem: 19:0:0:0:0:0:0:0\124h".."Вместо `".. nickname .."` будет " .. _anno .. " `" .. nicknameChanges[i].main .. "`...".."\124h\124r", "RAID")
+				if nicknameChanges[i].main and nicknameChanges[i].raidAnno then
+					SendChatMessage("|cff99ff00Вместо `".. nickname .."` будет " .. _anno .. " `" .. nicknameChanges[i].main .. "`...".."|r", "RAID")
+				end
 			end
 			return nicknameChanges[i].main;
 		end		
@@ -282,7 +287,7 @@ function GTD_Decay(procents)
 	end
 end
 
---блок инициализации фрейма рейтинга
+--[[--блок инициализации фрейма рейтинга
 RatingFrame = CreateFrame("Frame", "ratingFrame", UIParent)
 RatingFrame:SetBackdrop({
 	  bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", 
@@ -293,37 +298,78 @@ RatingFrame:SetBackdrop({
 
 RatingFrame:SetWidth(270)
 RatingFrame:SetHeight(300)
-RatingFrame:SetPoint("CENTER", -200, 0)
+RatingFrame:SetPoint("CENTER", 0, 0)
+RatingFrame:SetMovable(true)
+RatingFrame:EnableMouse(true)
+RatingFrame:RegisterForDrag("LeftButton")
+RatingFrame:SetScript("OnDragStart", function() this:StartMoving() end)
+RatingFrame:SetScript("OnDragStop", function() this:StopMovingOrSizing()end)
+RatingFrame:Hide()]]
 
 -- Create the scrolling parent frame and size it to fit inside the texture
-local scrollFrame = CreateFrame("ScrollFrame", "scrollFrame", RatingFrame, "UIPanelScrollFrameTemplate")
+--[[local scrollFrame = CreateFrame("ScrollFrame", "scrollFrame", RatingFrame, "UIPanelScrollFrameTemplate")
 scrollFrame:SetPoint("TOPLEFT", 13, -13)
 scrollFrame:SetPoint("BOTTOM", 0, 11)
-scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
+scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)]]
 
-eb = CreateFrame("EditBox", nil, scrollFrame)
-eb:SetMultiLine(true)
-eb:SetFontObject(ChatFontNormal)
-eb:SetWidth(230)
 
-scrollFrame:SetScrollChild(eb)
+--eb = CreateFrame("Frame", nil, scrollFrame)
+--eb:SetMultiLine(true)
+--eb:SetFontObject(ChatFontNormal)
+--eb:SetWidth(230)
+--scrollFrame:SetScrollChild(eb)
 
-RatingFrame:Hide()
 --конец фрейма
 
 --открытие или закрытие окна рейтинга
 function GTD_OpenRatingScrollFrame()	
-	if RatingFrame:IsShown() then
+	if RatingFrame and RatingFrame:IsShown() then
 		RatingFrame:Hide()
 	else
-		GTD_GetListRaiting()
+		GTD_GetListRaiting()		
 		RatingFrame:Show()
 	end	
 end
 
 --формирование данный рейтинга игроков гильдии
 function GTD_GetListRaiting()
-	local formula = GTD_GetDigitsF()	
+	local formula = GTD_GetDigitsF()
+	local f, _, _ = GameFontNormal:GetFont() 	
+
+
+
+	--блок инициализации фрейма рейтинга
+	RatingFrame = CreateFrame("Frame", "ratingFrame", UIParent)
+	RatingFrame:SetBackdrop({
+		  bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", 
+		  edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", 
+		  tile=1, tileSize=32, edgeSize=32, 
+		  insets={left=11, right=12, top=12, bottom=11}
+	})
+
+	RatingFrame:SetWidth(270)
+	RatingFrame:SetHeight(300)
+	RatingFrame:SetPoint("CENTER", 0, 0)
+	RatingFrame:SetMovable(true)
+	RatingFrame:EnableMouse(true)
+	RatingFrame:RegisterForDrag("LeftButton")
+	RatingFrame:SetScript("OnDragStart", function() this:StartMoving() end)
+	RatingFrame:SetScript("OnDragStop", function() this:StopMovingOrSizing()end)
+	RatingFrame:Hide()
+
+
+
+
+	local scrollFrame = CreateFrame("ScrollFrame", "scrollFrame", RatingFrame, "UIPanelScrollFrameTemplate")
+	scrollFrame:SetPoint("TOPLEFT", 13, -13)
+	scrollFrame:SetPoint("BOTTOM", 0, 11)
+	scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
+
+	local eb = CreateFrame("Frame", nil, scrollFrame)
+	--eb:SetMultiLine(true)
+	--eb:SetFontObject(ChatFontNormal)
+	eb:SetWidth(230)
+	
 	local players = {}
 	local textRating = ""
 	for y = 1, GetNumGuildMembers(1) do
@@ -354,10 +400,22 @@ function GTD_GetListRaiting()
 			_min = 1
 		end
 		_max = math.floor(tempPlayers[x][2]*formula[2]+100)
+		
+		local ppRow = eb:CreateFontString("fontStr"..(x), "OVERLAY")           
+      ppRow:SetWidth(0)
+      ppRow:SetHeight(20)  
+      ppRow:SetFont(f, 12)
+      ppRow:SetTextColor(1, .8, 0)
+      ppRow:ClearAllPoints()    
+      ppRow:SetPoint("TOPLEFT", eb, 5, x*-15)    
 		if SortField == "pp" then
-			textRating = string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
+      ppRow:SetText(string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
+			)       
+			--textRating = string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
 		elseif SortField == "name" then
-			textRating = string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating
+			--textRating = string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating
+			ppRow:SetText(string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating
+			)
 		end		
 	end
 
@@ -367,7 +425,8 @@ function GTD_GetListRaiting()
 		SortField = "pp"
 	end
 	--запись рейтинга во фрейм скроллинга
-	eb:SetText(textRating)	
+	--eb:SetText(textRating)	
+	scrollFrame:SetScrollChild(eb)
 end
 
 --получаем числа для формулы рола из гильдейской информации

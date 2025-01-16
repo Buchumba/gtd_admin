@@ -116,7 +116,7 @@
 				</Scripts>
 				<ButtonText font="Fonts\FRIZQT__.TTF">
 					<FontHeight val="12" />
-					<Color r="1" g="1" />
+					<Color r="0" g="1" b="0"/>
 				</ButtonText>
 			</Button>
 			<Button inherits="UIPanelButtonTemplate" enableMouseClicks="true" text="Удалить">
@@ -132,8 +132,7 @@
 					</OnClick>
 				</Scripts>
 				<ButtonText font="Fonts\FRIZQT__.TTF">
-					<FontHeight val="12" />
-					<Color r="1" g="1" />
+					<FontHeight val="12" />					
 				</ButtonText>
 			</Button>
 			<Button name="$parent_CloseButton" inherits="UIPanelCloseButton">
@@ -147,7 +146,9 @@
 				<Scripts>
 					<OnClick>
   			    	    Frame1:Hide();
-            			RatingFrame:Hide()
+            			if RatingFrame then
+            				RatingFrame:Hide()
+            			end
           			</OnClick>
 				</Scripts>
 			</Button>
