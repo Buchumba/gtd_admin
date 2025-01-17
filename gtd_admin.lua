@@ -287,8 +287,8 @@ function GTD_Decay(procents)
 	end
 end
 
---[[--блок инициализации фрейма рейтинга
-RatingFrame = CreateFrame("Frame", "ratingFrame", UIParent)
+--блок инициализации фрейма рейтинга
+RatingFrame = CreateFrame("Frame", "ratingFrame", Frame1)
 RatingFrame:SetBackdrop({
 	  bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", 
 	  edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", 
@@ -296,29 +296,24 @@ RatingFrame:SetBackdrop({
 	  insets={left=11, right=12, top=12, bottom=11}
 })
 
-RatingFrame:SetWidth(270)
-RatingFrame:SetHeight(300)
-RatingFrame:SetPoint("CENTER", 0, 0)
 RatingFrame:SetMovable(true)
 RatingFrame:EnableMouse(true)
 RatingFrame:RegisterForDrag("LeftButton")
 RatingFrame:SetScript("OnDragStart", function() this:StartMoving() end)
 RatingFrame:SetScript("OnDragStop", function() this:StopMovingOrSizing()end)
-RatingFrame:Hide()]]
+RatingFrame:Hide()
 
 -- Create the scrolling parent frame and size it to fit inside the texture
---[[local scrollFrame = CreateFrame("ScrollFrame", "scrollFrame", RatingFrame, "UIPanelScrollFrameTemplate")
+local scrollFrame = CreateFrame("ScrollFrame", "scrollFrame", RatingFrame, "UIPanelScrollFrameTemplate")
 scrollFrame:SetPoint("TOPLEFT", 13, -13)
 scrollFrame:SetPoint("BOTTOM", 0, 11)
-scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)]]
+scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
 
-
---eb = CreateFrame("Frame", nil, scrollFrame)
---eb:SetMultiLine(true)
---eb:SetFontObject(ChatFontNormal)
---eb:SetWidth(230)
---scrollFrame:SetScrollChild(eb)
-
+eb = CreateFrame("Editbox", nil, scrollFrame)
+eb:SetMultiLine(true)
+eb:SetFontObject(ChatFontNormal)
+eb:SetWidth(230)
+scrollFrame:SetScrollChild(eb)
 --конец фрейма
 
 --открытие или закрытие окна рейтинга
@@ -335,38 +330,11 @@ end
 function GTDA_GetListRaiting()
 	local formula = GTD_GetDigitsF()
 	local f, _, _ = GameFontNormal:GetFont() 	
-
-
-
-	--блок инициализации фрейма рейтинга
-	RatingFrame = CreateFrame("Frame", "ratingFrame", Frame1)
-	RatingFrame:SetBackdrop({
-		  bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", 
-		  edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", 
-		  tile=1, tileSize=32, edgeSize=32, 
-		  insets={left=11, right=12, top=12, bottom=11}
-	})
-
+  
+	RatingFrame:SetPoint("TOPLEFT", Frame1, -265, 0)
 	RatingFrame:SetWidth(270)
 	RatingFrame:SetHeight(300)
-	RatingFrame:SetPoint("TOPLEFT", -265, 0)
-	RatingFrame:SetMovable(true)
-	RatingFrame:EnableMouse(true)
-	RatingFrame:RegisterForDrag("LeftButton")
-	RatingFrame:SetScript("OnDragStart", function() this:StartMoving() end)
-	RatingFrame:SetScript("OnDragStop", function() this:StopMovingOrSizing()end)
-	RatingFrame:Hide()
-
-	local scrollFrame = CreateFrame("ScrollFrame", "scrollFrame", RatingFrame, "UIPanelScrollFrameTemplate")
-	scrollFrame:SetPoint("TOPLEFT", 13, -13)
-	scrollFrame:SetPoint("BOTTOM", 0, 11)
-	scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
-
-	local eb = CreateFrame("Editbox", nil, scrollFrame)
-	eb:SetMultiLine(true)
-	eb:SetFontObject(ChatFontNormal)
-	eb:SetWidth(230)
-	
+		
 	local players = {}
 	local textRating = ""
 	for y = 1, GetNumGuildMembers(1) do
@@ -381,7 +349,7 @@ function GTDA_GetListRaiting()
 	if SortField == nil or SortField == "pp" then
 		table.sort(tempPlayers, function(a, b) return a[2] < b[2] end)	-- 1pp < 40pp	
 	elseif SortField == "name" then
-		table.sort(tempPlayers, function(a, b) return a[1] < b[1] end)	-- A < Z
+		table.sort(tempPlayers, function(a, b) return a[1] > b[1] end)	-- A > Z
 	end
     
 	local countString = table.getn(tempPlayers)
@@ -395,21 +363,11 @@ function GTDA_GetListRaiting()
 			_min = 1
 		end
 		_max = math.floor(tempPlayers[x][2]*formula[2]+100)
-		
-		--[[local ppRow = eb:CreateFontString("fontStr"..(x), "OVERLAY")           
-    ppRow:SetWidth(0)
-    ppRow:SetHeight(20)  
-    ppRow:SetFont(f, 12)
-    ppRow:SetTextColor(1, .8, 0)
-    ppRow:ClearAllPoints()    
-    ppRow:SetPoint("TOPLEFT", eb, 5, x*-15)]]    
-		
-		if SortField == "pp" then
-      --ppRow:SetText(string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating)       
+
+		if SortField == "pp" then             
 			textRating = string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
 		elseif SortField == "name" then
-			textRating = string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating
-			--ppRow:SetText(string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating)
+			textRating = string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating			
 		end		
 	end
 
@@ -418,9 +376,9 @@ function GTDA_GetListRaiting()
 	else 
 		SortField = "pp"
 	end
+	
 	--запись рейтинга во фрейм скроллинга
-	eb:SetText(textRating)	
-	scrollFrame:SetScrollChild(eb)
+	eb:SetText(textRating)		
 end
 
 --получаем числа для формулы рола из гильдейской информации
