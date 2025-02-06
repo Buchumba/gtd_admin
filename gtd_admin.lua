@@ -7,8 +7,10 @@
 -- которому начисляется PP. Могут быть в одном рейде альт и мейн, но очки только на мейна перейдут.
 -- status: рабочая настройка в позиции nil.
 -- raidAnno: Оповещать (true) или не оповещать (nil) рейд о перекидывании очков.
-local nicknameChanges = {}
---nicknameChanges["Terma"] = {main = 'Wartips', status = nil, raidAnno = true}--для отладки
+local foundRewritesChanges = {} -- найденые сопоставления автозамен
+local nicknameChanges = {} -- таблица автозамен заполняемая вручную
+--nicknameChanges["Karusta"] = {main = "Wartips", status = nil, raidAnno = true}--для отладки
+--nicknameChanges["Wartips"] = {main = nil, status = nil, raidAnno = true}--для отладки
 --//конец блока записи замен
 
 GlobalOperation = ""
@@ -68,6 +70,7 @@ end
 
 function Button1_OnClick(operation)	
 	GTD_setStatusesOfNil();
+	foundRewritesChanges = {}
 	GlobalOperation = operation;
 	local enteredValue = EnteredValue:GetNumber()
 	LastEnteredValue = EnteredValue:GetNumber()    
@@ -123,7 +126,9 @@ function Button1_OnClick(operation)
 				_raidChat = "RAID"
 			end
 
-			SendChatMessage("\124cff00ff00\124Hitem: 19:0:0:0:0:0:0:0\124h".. _curText .."\124h\124r", _raidChat)					
+			SendChatMessage("|cff00ff00".. _curText .."|r", _raidChat)		
+			GTDA_AnnoRewritesPP(_raidChat)
+
 			if GTDA_WISPER_PP == 1 then
 				SendChatMessage(_curText, "WHISPER", nil, UnitName("player"))		
 			end	
@@ -138,6 +143,29 @@ function GTDA_GetTextAnnoAddedPP(pp)
 	return "Всем кто в рейде начисляется " .. tostring(pp) .. " progress-point!"
 end
 
+--анонс автозамен
+function GTDA_AnnoRewritesPP(typeRaidChat)
+	if table.getn(foundRewritesChanges) > 0 then
+		local anno = ""
+		local c = 0 
+		SendChatMessage("|cff99ff00Переначисления PP...|r", typeRaidChat)
+		for i, val in pairs(foundRewritesChanges) do			
+			if val.from ~= "" and val.to ~= "" then
+				c = c + 1
+				anno = anno .. val.from .. "->" .. val.to .. " \\ "
+				if c == 10 then
+					SendChatMessage(anno, typeRaidChat)
+					c = 0
+					anno = ""
+				end
+			end		
+		end
+		if anno ~= "" then
+			SendChatMessage(anno, typeRaidChat)
+		end
+	end
+end
+
 function GTD_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("Аддон `gtd_admin` гильдии Going to Death. Предназначен для внесения progress-points за убийство босса, закрытие рейда или еще какую-нибудь активность.",1,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("Список команд:",0,1,0);
@@ -148,11 +176,10 @@ function GTD_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("Впоследствии, планируется автоматизация процесса начисления.", 1,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("Об ошибка этого аддона, пожалуйста, сообщите Casta (Going to Death. Turtle-WOW).",1,1,0);
 end
-
 --замена альта ника игрока на ник игрока мейна (должен быть в гильдии)
 --для получения PP мейну вместо идущего альта.
 function GTD_usersChanges(nickname)	
-	local _anno = "";
+	local _anno = "";	
 	for i, val in pairs(nicknameChanges) do			
 		if i == nickname then			
 			if nicknameChanges[i].status == nil then
@@ -163,7 +190,8 @@ function GTD_usersChanges(nickname)
 				end
 				nicknameChanges[i].status = 1;
 				if nicknameChanges[i].main and nicknameChanges[i].raidAnno then
-					SendChatMessage("|cff99ff00Вместо `".. nickname .."` будет " .. _anno .. " `" .. nicknameChanges[i].main .. "`...".."|r", "RAID")
+					tinsert(foundRewritesChanges, {from = nickname, to = nicknameChanges[i].main})
+				-- 	SendChatMessage("|cff99ff00Вместо `".. nickname .."` будет " .. _anno .. " `" .. nicknameChanges[i].main .. "`...".."|r", "RAID")
 				end
 			end
 			return nicknameChanges[i].main;
@@ -550,62 +578,6 @@ function GTD_OSC(wisp)
 	if wisp ~= nil then
 		SendChatMessage(_log, "WHISPER", nil, UnitName("player"));
 	end
-end
-
---функция авторола
-function GTD_AutoRoll(id)
-	local  inInstance, instanceType = IsInInstance()
-	notInInstance   = (instanceType == 'none');
-	inPartyInstance = (instanceType == 'party');
-	inRaidInstance  = (instanceType == 'raid');
-	inArenaInstance = (instanceType == 'arena');
-	inPvPInstance   = (instanceType == 'pvp');
-	isLeader = IsRaidLeader();
-	class = UnitClass("Player");
-	
-	RollReturn = function()
-		local txt = ""
-		if isLeader then
-			txt = "NEED"
-		elseif not isLeader then
-			txt = "PASS"
-		end
-		return txt
-	end
-	if inRaidInstance then	
-		local _, name, _, quality = GetLootRollItemInfo(id);
-		if string.find(name ,"Hakkari Bijou") or string.find(name ,"Coin") then
-			RollOnLoot(id, 1);
-			local _, _, _, hex = GetItemQualityColor(quality)
-			DEFAULT_CHAT_FRAME:AddMessage("GTD: Auto NEED "..hex..GetLootRollItemLink(id))
-			return
-		end
-	elseif GetRealZoneText() == "The Black Morass" then
-		local _, name, _, quality = GetLootRollItemInfo(id);
-		local nameItem = "Corrupted Sand"
-		if string.find(name , nameItem) then
-			RollOnLoot(id, 1);
-			ConfirmBindOnUse();
-			ConfirmLootRoll(id, 1);
-			local _, _, _, hex = GetItemQualityColor(quality)
-			DEFAULT_CHAT_FRAME:AddMessage("GTD: Auto NEED "..hex..GetLootRollItemLink(id))
-			return
-		end		
-	end	
-end
-
---авторолы в инстах
-local gtdEvents = CreateFrame("frame")
-gtdEvents:RegisterEvent("START_LOOT_ROLL")
-gtdEvents:SetScript("OnEvent", function()
-	if event == "START_LOOT_ROLL" then
-		GTD_AutoRoll(arg1)
-	end
-end)
-
-function Swin()	
-	PickupInventoryItem(16);
-	PickupInventoryItem(17);
 end
 
 --Боссы для progress-points
