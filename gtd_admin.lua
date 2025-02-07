@@ -25,7 +25,7 @@ StaticPopupDialogs["CONFIRM_ADD"] = {
 	button1 = "|cffa5ffb4Да, внести!|r",
 	button2 = "Нет, не нужно!",
 	OnAccept = function()		
-		Button1_OnClick('add')
+		Button1_OnClick('add')		
 	end,
 	timeout = 0,
 	whileDead = true,
@@ -135,8 +135,9 @@ function Button1_OnClick(operation)
 		end
 	end	
 	GlobalOperation = "";
-	Frame1:Hide();
-	RatingFrame:Hide()
+	EnteredName:SetText("")
+	--Frame1:Hide();
+	--RatingFrame:Hide()
 end
 
 function GTDA_GetTextAnnoAddedPP(pp)
@@ -311,12 +312,12 @@ function GTD_Decay(procents)
 		end
 	end
 	if _count > 0 then
-		SendChatMessage("\124c00aaff00\124Hitem: 19:0:0:0:0:0:0:0\124h".. "Списание " .. " ".. procents.."% progress-points." .."\124h\124r", "GUILD")	
+		SendChatMessage("|cffaaff00".. "Списание " .. " ".. procents.."% progress-points." .."|r", "GUILD")	
 	end
 end
 
 --блок инициализации фрейма рейтинга
-RatingFrame = CreateFrame("Frame", "ratingFrame", Frame1)
+RatingFrame = CreateFrame("Frame", "gtda_RatingFrame", Frame1)
 RatingFrame:SetBackdrop({
 	  bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", 
 	  edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", 
@@ -324,22 +325,35 @@ RatingFrame:SetBackdrop({
 	  insets={left=11, right=12, top=12, bottom=11}
 })
 
-RatingFrame:SetMovable(true)
+--заголовок 2
+local RaitingRaidHeader = CreateFrame("Frame", "gtda_raitingHeader", RatingFrame)
+RaitingRaidHeader:SetPoint("TOP", RatingFrame, "TOP", 0, 12)
+RaitingRaidHeader:SetWidth(230)
+RaitingRaidHeader:SetHeight(64)
+RaitingRaidHeader:SetBackdrop({
+	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Header"
+})
+local RaitingRaidHeaderString = RaitingRaidHeader:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+RaitingRaidHeaderString:SetPoint("CENTER", RaitingRaidHeader, "CENTER", 0, 12)
+RaitingRaidHeaderString:SetText("Рейтинг гильдии")
+
+-- RatingFrame:SetMovable(true)
 RatingFrame:EnableMouse(true)
 RatingFrame:RegisterForDrag("LeftButton")
-RatingFrame:SetScript("OnDragStart", function() this:StartMoving() end)
+-- RatingFrame:SetScript("OnDragStart", function() this:StartMoving() end)
 RatingFrame:SetScript("OnDragStop", function() this:StopMovingOrSizing()end)
 RatingFrame:Hide()
 
 -- Create the scrolling parent frame and size it to fit inside the texture
-local scrollFrame = CreateFrame("ScrollFrame", "scrollFrame", RatingFrame, "UIPanelScrollFrameTemplate")
-scrollFrame:SetPoint("TOPLEFT", 13, -13)
-scrollFrame:SetPoint("BOTTOM", 0, 11)
-scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
+local scrollFrame = CreateFrame("ScrollFrame", "gtda_scrollFrame", RatingFrame, "UIPanelScrollFrameTemplate")
+scrollFrame:SetPoint("TOPLEFT", 14, -27)
+scrollFrame:SetPoint("BOTTOM", 0, 14)
+scrollFrame:SetPoint("BOTTOMRIGHT", -37, 4)
 
 eb = CreateFrame("Editbox", nil, scrollFrame)
 eb:SetMultiLine(true)
-eb:SetFontObject(ChatFontNormal)
+eb:SetFontObject(GameFontHighlightSmall)
+eb:SetAutoFocus(false)
 eb:SetWidth(230)
 scrollFrame:SetScrollChild(eb)
 --конец фрейма
@@ -358,21 +372,21 @@ end
 function GTDA_GetListRaiting()
 	local formula = GTD_GetDigitsF()
 	local f, _, _ = GameFontNormal:GetFont() 	
-  
+  local tempPlayers = {}
+  local players = {}
+	local textRating = ""
+
 	RatingFrame:SetPoint("TOPLEFT", Frame1, -265, 0)
 	RatingFrame:SetWidth(270)
-	RatingFrame:SetHeight(300)
+	RatingFrame:SetHeight(Frame1:GetHeight() - 13)
 		
-	local players = {}
-	local textRating = ""
 	for y = 1, GetNumGuildMembers(1) do
 		local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(y);
 		if type(tonumber(officernote)) == "number" then
-			table.insert(players, {name, tonumber(officernote), rank})			
+			table.insert(players, {name, tonumber(officernote), rank})
 		end			
-	end
-   
-	local tempPlayers = {}
+	end  
+	
 	tempPlayers = players
 	if SortField == nil or SortField == "pp" then
 		table.sort(tempPlayers, function(a, b) return a[2] < b[2] end)	-- 1pp < 40pp	
@@ -382,7 +396,7 @@ function GTDA_GetListRaiting()
     
 	local countString = table.getn(tempPlayers)
 	
-	eb:SetHeight(countString*14)--установим высоту скролла
+	eb:SetHeight(countString*13)--установим высоту скролла
 	
 	local _min, _max
 	for x = 1, countString do 
@@ -393,9 +407,9 @@ function GTDA_GetListRaiting()
 		_max = math.floor(tempPlayers[x][2]*formula[2]+100)
 
 		if SortField == "pp" then             
-			textRating = string.format("|cff00ff7f%s|r |cff0000aa- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
+			textRating = string.format("|cff00ff7f%s|r |cff5e5e5e- - ->|r %s (%s)   |cffFFF569(%s-%s)|r\r", tempPlayers[x][2], tempPlayers[x][1], tempPlayers[x][3], tostring(_min), tostring(_max)) .. textRating
 		elseif SortField == "name" then
-			textRating = string.format("|cff00ff7f%s (%s)|r |cff0000aa<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating			
+			textRating = string.format("|cff00ff7f%s (%s)|r |cff5e5e5e<- - -|r %s   |cffFFF569(%s-%s)|r\r", tempPlayers[x][1], tempPlayers[x][3], tempPlayers[x][2], tostring(_min), tostring(_max)) .. textRating			
 		end		
 	end
 

@@ -1,6 +1,6 @@
 <Ui xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/">	
 	<Frame name="Frame1" parent="UIParent" toplevel="true" movable="true" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
-		<Size x="400" y="220" />
+		<Size x="350" y="220" />
 		<Anchors>
 			<Anchor point="CENTER" />
 		</Anchors>
@@ -19,66 +19,60 @@
 			</EdgeSize>
 		</Backdrop>
 		<Layers>
-			<Layer level="OVERLAY">
-				<FontString inherits="GameFontHighlightLarge" font="Fonts\SKURRI_CYR.TTF" text=". : Going to Death : .">
-					<Size x="353" y="30" />
+			<Layer level="ARTWORK">
+				<Texture name="Frame1Header" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="190" y="64"/>
+					</Size>
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="0" y="-10" />
+								<AbsDimension x="0" y="12"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
-					<FontHeight val="26" />
-					<Color r="1" g="0.502" />
-					<Shadow x="1" y="1">
-						<Offset>
-							<AbsDimension x="1" y="-1" />
-						</Offset>
-						<Color />
-					</Shadow>
+				</Texture>
+				<FontString inherits="GameFontHighlight" text="GTD|cffffaa00ROLL|r:Admin">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="Frame1">
+							<Offset>
+								<AbsDimension x="0" y="-2"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
 				</FontString>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString inherits="GameFontNormal" text="Добавление\удаление progress-points всем, кто в рейде (даже, если offline):">
-					<Size x="219" y="28" />
+				<FontString inherits="GameFontNormal" text="Добавление\удаление progress-points всем, кто в рейде |cffaaaaaa(даже, если offline)|r:">
+					<Size x="200" y="28" />
 					<Anchors>
-						<Anchor point="CENTER">
-							<Offset x="-31" y="55" />
+						<Anchor point="TOP">
+							<Offset x="-36" y="-25" />
 						</Anchor>
 					</Anchors>
-				</FontString>
-				<FontString inherits="GameFontNormal" text="Начислить игроку">
+				</FontString>				
+				<FontString inherits="GameFontNormal" text="Начислить игроку:">
 					<Size x="111" y="20" />
 					<Anchors>
-						<Anchor point="CENTER">
-							<Offset x="-113" y="10" />
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="ИЛИ">
-					<Size x="62" y="20" />
-					<Anchors>
-						<Anchor point="CENTER">
-							<Offset y="30" />
-						</Anchor>
-					</Anchors>
-					<FontHeight val="24" />
-					<Color r="1" g="1" />
-				</FontString>
-				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="|cFFff93ffWisp себе при начислении pp:">
-					<Size x="185" y="20" />
-					<Anchors>
 						<Anchor point="CENTER" relativePoint="LEFT">
-							<Offset x="89" y="-70" />
+							<Offset x="64" y="40" />
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="|cFFff93ffWisp себе при уловках игроков:">
+				
+				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="Wisp себе при начислении pp:">
 					<Size x="185" y="20" />
 					<Anchors>
-						<Anchor point="CENTER" relativePoint="RIGHT">
-							<Offset x="-120" y="-70" />
+						<Anchor point="CENTER">
+							<Offset x="-10" y="-55" />
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="Wisp себе при уловках игроков:">
+					<Size x="185" y="20" />
+					<Anchors>
+						<Anchor point="CENTER" >
+							<Offset x="-10" y="-35" />
 						</Anchor>
 					</Anchors>					
 					
@@ -89,8 +83,8 @@
 			<EditBox name="EnteredValue" inherits="InputBoxTemplate" letters="5">
 				<Size x="40" y="20" />
 				<Anchors>
-					<Anchor y="20" point="CENTER">
-						<Offset x="115" y="56" />
+					<Anchor y="20" point="TOP">
+						<Offset x="67" y="-15" />
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -99,14 +93,15 @@
 						this:SetTextInsets(0, 8, 0, 0);
 						this:SetNumeric();
 						this:SetNumber(1);
+						this:SetScale(1.5)
 					</OnLoad>
 				</Scripts>
 			</EditBox>
-			<Button inherits="UIPanelButtonTemplate" enableMouseClicks="true" text="Добавить">
+			<Button inherits="UIPanelButtonTemplate" enableMouseClicks="true" text="Добавить :)">
 				<Size x="150" y="40" />
 				<Anchors>
 					<Anchor point="CENTER" relativePoint="LEFT">
-						<Offset x="90" y="-25" />
+						<Offset x="90" y="3" />
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -119,20 +114,21 @@
 					<Color r="0" g="1" b="0"/>
 				</ButtonText>
 			</Button>
-			<Button inherits="UIPanelButtonTemplate" enableMouseClicks="true" text="Удалить">
+			<Button inherits="UIPanelButtonTemplate" enableMouseClicks="true" text="Удалить :(">
 				<Size x="150" y="40" />
 				<Anchors>
 					<Anchor point="CENTER" relativePoint="RIGHT">
-						<Offset x="-90" y="-25" />
+						<Offset x="-90" y="3" />
 					</Anchor>
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						StaticPopup_Show("CONFIRM_REMOTE", EnteredValue:GetNumber())
+						StaticPopup_Show("CONFIRM_REMOTE", EnteredValue:GetNumber())						
 					</OnClick>
 				</Scripts>
 				<ButtonText font="Fonts\FRIZQT__.TTF">
-					<FontHeight val="12" />					
+					<FontHeight val="12" />	
+					<Color r="1" g="1" b="1"/>				
 				</ButtonText>
 			</Button>
 			<Button name="$parent_CloseButton" inherits="UIPanelCloseButton">
@@ -166,18 +162,23 @@
 				</Scripts>
 			</Button>
 			<EditBox name="EnteredName" inherits="InputBoxTemplate" autoFocus="false">
-				<Size x="100" y="32" />
+				<Size x="100" y="25" />
 				<Anchors>
 					<Anchor point="CENTER">
-						<Offset x="-5" y="10" />
+						<Offset x="-5" y="40" />
 					</Anchor>
 				</Anchors>
+				<Scripts>
+					<OnShow>
+						this:SetText("")						
+					</OnShow>
+				</Scripts>
 			</EditBox>	
 			<Button inherits="UIPanelButtonTemplate" text="Взять с таргета">
 				<Size x="109" y="23" />
 				<Anchors>
-					<Anchor point="CENTER">
-						<Offset x="105" y="10" />
+					<Anchor point="CENTER" relativePoint="RIGHT"> 
+						<Offset x="-71" y="40" />
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -185,38 +186,12 @@
 						GTDA_SetNameFromTarget()
 					</OnClick>
 				</Scripts>
-			</Button>		
-			<Button inherits="UIPanelButtonTemplate" text="PP-Рейтинг">
-				<Size x="160" y="23" />
-				<Anchors>
-					<Anchor point="BOTTOMLEFT">
-						<Offset x="15" y="-2" />
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnClick>
-						GTDA_OpenRatingScrollFrame()
-					</OnClick>
-				</Scripts>
-			</Button>
-			<Button inherits="UIPanelButtonTemplate" text="|cFFff93ffКак выглядят Wisp?">
-				<Size x="160" y="23" />
-				<Anchors>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="-15" y="-2" />
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnClick>
-						GTDA_DebugOfWispers()     
-					</OnClick>
-				</Scripts>
-			</Button>
+			</Button>	
             <Button name="MessageToWisperPP" inherits="UIPanelButtonTemplate" text="">
 				<Size x="24" y="22" />
 				<Anchors>
-					<Anchor point="CENTER" relativePoint="LEFT">
-						<Offset x="176" y="-70" />
+					<Anchor point="CENTER" >
+						<Offset x="75" y="-55" />
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -228,13 +203,39 @@
 			<Button name="MessageToWisperAbuse" inherits="UIPanelButtonTemplate" text="">
 				<Size x="24" y="22" />
 				<Anchors>
-					<Anchor point="CENTER" relativePoint="RIGHT">
-						<Offset x="-30" y="-70"/>
+					<Anchor point="CENTER">
+						<Offset x="80" y="-35"/>
 					</Anchor>
 				</Anchors>
 				<Scripts>
 					<OnClick>
 						 GTDA_SetWisperAbuse()           
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button inherits="UIPanelButtonTemplate" text="PP-Рейтинг">
+				<Size x="120" y="23" />
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset x="16" y="16" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						GTDA_OpenRatingScrollFrame()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button inherits="UIPanelButtonTemplate" text="Как выглядят Wisp?">
+				<Size x="120" y="23" />
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-15" y="16" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						GTDA_DebugOfWispers()     
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -246,6 +247,9 @@
 				this:Hide()
 				this:RegisterForDrag("LeftButton");
 				this:SetMovable(1);
+				--скрываем по ESC
+				tinsert(UISpecialFrames, this:GetName()); 
+				tinsert(UISpecialFrames, "gtda_RatingFrame"); 
 			</OnLoad>
 			<OnDragStart>
 				this:StartMoving();
