@@ -9,8 +9,7 @@
 -- raidAnno: Оповещать (true) или не оповещать (nil) рейд о перекидывании очков.
 local foundRewritesChanges = {} -- найденые сопоставления автозамен
 local nicknameChanges = {} -- таблица автозамен заполняемая вручную
---nicknameChanges["Karusta"] = {main = "Wartips", status = nil, raidAnno = true}--для отладки
---nicknameChanges["Wartips"] = {main = nil, status = nil, raidAnno = true}--для отладки
+--nicknameChanges["FromCharacter"] = {main = "ToCharacter", status = nil, raidAnno = true}--для отладки
 --//конец блока записи замен
 
 GlobalOperation = ""
@@ -465,7 +464,8 @@ local _allZones = {
 		"Ahn'Qiraj",--5
 		"Naxxramas",--6
 		"Tel'Abim",--7 debug only
-		"The Upper Necropolis"--8 (Сапфирон и Кель)
+		"The Upper Necropolis",--8 (Сапфирон и Кель)
+		"Tower of Karazhan" -- 9 кара-40
 	}
 
 function GTD_SetZones()
