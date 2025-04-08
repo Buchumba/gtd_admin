@@ -1,6 +1,9 @@
 <Ui xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/">	
+	<Font name="gtdFont" font="Fonts\ARIALN.TTF" inherits="GameFontNormal">
+		<FontHeight  val="12" />      			
+	</Font>
 	<Frame name="Frame1" parent="UIParent" toplevel="true" movable="true" frameStrata="MEDIUM" enableMouse="true" enableKeyboard="true">
-		<Size x="350" y="220" />
+		<Size x="400" y="220" />
 		<Anchors>
 			<Anchor point="CENTER" />
 		</Anchors>
@@ -22,7 +25,7 @@
 			<Layer level="ARTWORK">
 				<Texture name="Frame1Header" file="Interface\DialogFrame\UI-DialogBox-Header">
 					<Size>
-						<AbsDimension x="190" y="64"/>
+						<AbsDimension x="220" y="64"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOP">
@@ -32,7 +35,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString inherits="GameFontHighlight" text="GTD|cffffaa00ROLL|r:Admin">
+				<FontString inherits="gtdFont" text="GTD|cffffaa00ROLL|r:Admin">
 					<Anchors>
 						<Anchor point="TOP" relativeTo="Frame1">
 							<Offset>
@@ -43,24 +46,24 @@
 				</FontString>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString inherits="GameFontNormal" text="Добавление\удаление progress-points всем, кто в рейде |cffaaaaaa(даже, если offline)|r:">
+				<FontString inherits="gtdFont" text="Добавление\удаление progress-points всем, кто в рейде |cffaaaaaa(даже, если offline)|r:">
 					<Size x="200" y="28" />
 					<Anchors>
 						<Anchor point="TOP">
-							<Offset x="-36" y="-25" />
+							<Offset x="-45" y="-25" />
 						</Anchor>
 					</Anchors>
 				</FontString>				
-				<FontString inherits="GameFontNormal" text="Начислить игроку:">
+				<FontString inherits="gtdFont" text="Начислить игроку:">
 					<Size x="111" y="20" />
 					<Anchors>
-						<Anchor point="CENTER" relativePoint="LEFT">
-							<Offset x="64" y="40" />
+						<Anchor point="LEFT" inherits="CENTER">
+							<Offset x="30" y="40" />
 						</Anchor>
 					</Anchors>
 				</FontString>
 				
-				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="Wisp себе при начислении pp:">
+				<FontString inherits="gtdFont" font="Fonts\MORPHEUS_CYR.TTF" text="Wisp себе при начислении pp:">
 					<Size x="185" y="20" />
 					<Anchors>
 						<Anchor point="CENTER">
@@ -68,7 +71,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString inherits="GameFontNormal" font="Fonts\MORPHEUS_CYR.TTF" text="Wisp себе при уловках игроков:">
+				<FontString inherits="gtdFont" font="Fonts\MORPHEUS_CYR.TTF" text="Wisp себе при уловках игроков:">
 					<Size x="185" y="20" />
 					<Anchors>
 						<Anchor point="CENTER" >
@@ -110,7 +113,7 @@
 					</OnClick>
 				</Scripts>
 				<ButtonText font="Fonts\FRIZQT__.TTF">
-					<FontHeight val="12" />
+					<FontHeight val="14" />
 					<Color r="0" g="1" b="0"/>
 				</ButtonText>
 			</Button>
@@ -127,7 +130,7 @@
 					</OnClick>
 				</Scripts>
 				<ButtonText font="Fonts\FRIZQT__.TTF">
-					<FontHeight val="12" />	
+					<FontHeight val="14" />	
 					<Color r="1" g="1" b="1"/>				
 				</ButtonText>
 			</Button>
@@ -175,10 +178,15 @@
 				</Scripts>
 			</EditBox>	
 			<Button inherits="UIPanelButtonTemplate" text="Взять с таргета">
+				<ButtonText font="Fonts\ARIALN.TTF">
+					<FontHeight>
+						<AbsValue val="11" />
+					</FontHeight>
+				</ButtonText>
 				<Size x="109" y="23" />
 				<Anchors>
-					<Anchor point="CENTER" relativePoint="RIGHT"> 
-						<Offset x="-71" y="40" />
+					<Anchor point="CENTER"> 
+						<Offset x="103" y="40" />
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -187,24 +195,16 @@
 					</OnClick>
 				</Scripts>
 			</Button>	
-            <Button name="MessageToWisperPP" inherits="UIPanelButtonTemplate" text="">
-				<Size x="24" y="22" />
-				<Anchors>
-					<Anchor point="CENTER" >
-						<Offset x="75" y="-55" />
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnClick>
-						GTDA_SetWisperPP()         
-					</OnClick>
-				</Scripts>
-			</Button>
-			<Button name="MessageToWisperAbuse" inherits="UIPanelButtonTemplate" text="">
-				<Size x="24" y="22" />
+            <Button name="MessageToWisperAbuse" inherits="UIPanelButtonTemplate" text="">				
+				<ButtonText font="Fonts\ARIALN.TTF">
+					<FontHeight>
+						<AbsValue val="11" />
+					</FontHeight>
+				</ButtonText>
+				<Size x="24" y="18" />
 				<Anchors>
 					<Anchor point="CENTER">
-						<Offset x="80" y="-35"/>
+						<Offset x="90" y="-36"/>
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -213,7 +213,30 @@
 					</OnClick>
 				</Scripts>
 			</Button>
+            <Button name="MessageToWisperPP" inherits="UIPanelButtonTemplate" text="">
+				<ButtonText font="Fonts\ARIALN.TTF">
+					<FontHeight>
+						<AbsValue val="11" />
+					</FontHeight>
+				</ButtonText>
+				<Size x="24" y="20" />
+				<Anchors>
+					<Anchor point="CENTER" >
+						<Offset x="85" y="-56" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						GTDA_SetWisperPP()         
+					</OnClick>
+				</Scripts>
+			</Button>			
 			<Button inherits="UIPanelButtonTemplate" text="PP-Рейтинг">
+				<ButtonText font="Fonts\ARIALN.TTF">
+					<FontHeight>
+						<AbsValue val="11" />
+					</FontHeight>
+				</ButtonText>
 				<Size x="120" y="23" />
 				<Anchors>
 					<Anchor point="BOTTOMLEFT">
@@ -227,6 +250,11 @@
 				</Scripts>
 			</Button>
 			<Button inherits="UIPanelButtonTemplate" text="Как выглядят Wisp?">
+				<ButtonText font="Fonts\ARIALN.TTF">
+					<FontHeight>
+						<AbsValue val="11" />
+					</FontHeight>
+				</ButtonText>
 				<Size x="120" y="23" />
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT">
