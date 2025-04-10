@@ -19,7 +19,7 @@ AccessInstances = {}
 LastEnteredValue = 0
 local StrOptionYes = "да"
 local StrOptionNo = "нет"
-local GTDA_VERSION = "1.0.7"
+local GTDA_VERSION = "1.0.8"
 
 GTDA_GLOBALS = CreateFrame("Frame")
 GTDA_GLOBALS:RegisterEvent("ADDON_LOADED")
@@ -311,9 +311,14 @@ function GTDA_insertPointOneUser(enteredValue, enteredName, operation)
 		end
 		
 		if (GetNumRaidMembers() >= 1) then			
-			SendChatMessage("\124cff00ff88\124Hitem: 19:0:0:0:0:0:0:0\124h".. _curText .."\124h\124r", "RAID_WARNING")	
+			if IsRaidLeader() == 1 then
+				_raidChat = "RAID_WARNING"
+			else
+				_raidChat = "RAID"
+			end
+			SendChatMessage("|cff00ff88".. _curText .."|r", _raidChat)	
 		else
-			print("\124cff00ff88\124Hitem: 19:0:0:0:0:0:0:0\124h".. _curText .."\124h\124r")
+			print("|cff00ff88".. _curText .."|r")
 		end
 		if GTDA_WISPER_PP == 1 then
 			SendChatMessage(_curText, "WHISPER", nil, UnitName("player"));
