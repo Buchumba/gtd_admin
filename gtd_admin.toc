@@ -1,8 +1,8 @@
 ## Title: gtd_admin
 ## Notes: Аддон гильдии Going to Death. Предназначен для внесения progress-points за убийство босса, закрытие рейда или еще какую-нибудь активность.
-## Version: 1.0
+## Version: 1.0.2
 ## Author: Casta (guild "Going to Death"), project: Turtle-WOW, site: www.goingtodeath.ru, mail: baners@mail.ru
-## SavedVariablesPerCharacter: GTDA_WISPER_PP, GTDA_WISPER_ABUSE
+## SavedVariablesPerCharacter: GTDA_WISPER_PP, GTDA_WISPER_ABUSE, GTD_START_COUNT_ADDED_PP, GTD_ADDED_PP_RAID_SESSION
 ## Interface: 11200
 
 gtd_admin.lua

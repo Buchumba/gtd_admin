@@ -25,7 +25,7 @@
 			<Layer level="ARTWORK">
 				<Texture name="Frame1Header" file="Interface\DialogFrame\UI-DialogBox-Header">
 					<Size>
-						<AbsDimension x="220" y="64"/>
+						<AbsDimension x="300" y="64"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOP">
@@ -35,7 +35,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString inherits="gtdFont" text="GTD|cffffaa00ROLL|r:Admin">
+				<FontString name="gtdMainTitle" inherits="gtdFont" text="GTD|cffffaa00ROLL|r:Admin">
 					<Anchors>
 						<Anchor point="TOP" relativeTo="Frame1">
 							<Offset>
@@ -63,7 +63,7 @@
 					</Anchors>
 				</FontString>
 				
-				<FontString inherits="gtdFont" font="Fonts\MORPHEUS_CYR.TTF" text="Wisp себе при начислении pp:">
+				<FontString inherits="gtdFont" text="Wisp себе при начислении pp:">
 					<Size x="185" y="20" />
 					<Anchors>
 						<Anchor point="CENTER">
@@ -71,11 +71,37 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString inherits="gtdFont" font="Fonts\MORPHEUS_CYR.TTF" text="Wisp себе при уловках игроков:">
+				<FontString inherits="gtdFont" text="Wisp себе при уловках игроков:">
 					<Size x="185" y="20" />
 					<Anchors>
 						<Anchor point="CENTER" >
 							<Offset x="-10" y="-35" />
+						</Anchor>
+					</Anchors>					
+					
+				</FontString>
+				<FontString name="gtd_StartCountAddedPP" inherits="gtdFont" text="">
+					<Size x="50" y="20" />
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset x="-8" y="0" />
+						</Anchor>
+					</Anchors>	
+				</FontString>
+				<FontString inherits="gtdFont" text="\">
+					<Size x="50" y="20" />
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset x="0" y="0" />
+						</Anchor>
+					</Anchors>					
+					
+				</FontString>
+				<FontString name="gtd_AddedPpRaidSession" inherits="gtdFont" text="">
+					<Size x="50" y="20" />
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset x="6" y="0" />
 						</Anchor>
 					</Anchors>					
 					
@@ -246,6 +272,24 @@
 				<Scripts>
 					<OnClick>
 						GTDA_OpenRatingScrollFrame()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button inherits="UIPanelButtonTemplate" text="Очистить лог">
+				<ButtonText font="Fonts\ARIALN.TTF">
+					<FontHeight>
+						<AbsValue val="11" />
+					</FontHeight>
+				</ButtonText>
+				<Size x="80" y="23" />
+				<Anchors>
+					<Anchor point="BOTTOM">
+						<Offset x="0" y="16" />
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						GTD_START_COUNT_ADDED_PP, GTD_ADDED_PP_RAID_SESSION	= 0					
 					</OnClick>
 				</Scripts>
 			</Button>

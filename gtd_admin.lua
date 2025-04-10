@@ -10,14 +10,35 @@
 local foundRewritesChanges = {} -- найденые сопоставления автозамен
 local nicknameChanges = {} -- таблица автозамен заполняемая вручную
 --nicknameChanges["FromCharacter"] = {main = "ToCharacter", status = nil, raidAnno = true}--для отладки
+--nicknameChanges["Karatelb"] = {main = "Konstant", status = nil, raidAnno = true}--для отладки
 --//конец блока записи замен
-
+GTD_NAME_ADDON = "gtd_admin"
 GlobalOperation = ""
 SortField = "pp"--сортировка по умолчанию по progress-points
 AccessInstances = {}
 LastEnteredValue = 0
 local StrOptionYes = "да"
 local StrOptionNo = "нет"
+local GTD_VERSION = "1.0.3"
+
+GTD_GLOBALS = CreateFrame("Frame")
+GTD_GLOBALS:RegisterEvent("ADDON_LOADED")
+GTD_GLOBALS:SetScript("OnEvent", function()
+    if event then
+        DEFAULT_CHAT_FRAME:AddMessage(arg1)
+        if event == 'ADDON_LOADED' and arg1 == 'gtd_admin' then            
+            return GTDR_GLOBALS.init()
+        end
+    end    
+end)
+
+function GTD_GLOBALS.init()
+	DEFAULT_CHAT_FRAME:AddMessage(GTD_NAME_ADDON.." loaded.")
+	local countAdded = GTD_START_COUNT_ADDED_PP or 0
+	local addedPP = GTD_ADDED_PP_RAID_SESSION or 0
+	gtd_StartCountAddedPP:SetText(tostring(countAdded))
+	gtd_StartCountAddedPP:SetText(tostring(GTD_START_COUNT_ADDED_PP))
+end
 
 StaticPopupDialogs["CONFIRM_ADD"] = {	
 	text =  "|cffa5ffb4Внести указанное количество progress-points|r `|cff00ff7f%s|r` |cffa5ffb4?|r",
@@ -48,6 +69,8 @@ StaticPopupDialogs["CONFIRM_REMOTE"] = {
 function Frame1_OnLoad()
 	--установим массив разрешенных зон для проверки прогресс-рола, где ключ индекс и значение = название текущей локации
 	GTD_SetZones()	
+	local version = " |cffffffffv." .. GTD_VERSION .. "|r"
+	gtdMainTitle:SetText(gtdMainTitle:GetText() .. version)
 	SLASH_GTD1 = "/gtd";	
 	SlashCmdList["GTD"] = function(msg)		
 		GTDA_StartSettings()
@@ -115,6 +138,8 @@ function Button1_OnClick(operation)
 			local _curText = ""	
 			if operation == "add" then				
 				_curText = GTDA_GetTextAnnoAddedPP(enteredValue)
+				GTD_START_COUNT_ADDED_PP = GTD_START_COUNT_ADDED_PP + 1
+				gtd_StartCountAddedPP:SetText(GTD_START_COUNT_ADDED_PP)
 			elseif operation == "remote" then
 				_curText = "У всех кто в рейде списывается " .. enteredValue .. " progress-point!";		
 			end			
@@ -327,14 +352,15 @@ RatingFrame:SetBackdrop({
 --заголовок 2
 local RaitingRaidHeader = CreateFrame("Frame", "gtda_raitingHeader", RatingFrame)
 RaitingRaidHeader:SetPoint("TOP", RatingFrame, "TOP", 0, 12)
-RaitingRaidHeader:SetWidth(230)
+RaitingRaidHeader:SetWidth(220)
 RaitingRaidHeader:SetHeight(64)
 RaitingRaidHeader:SetBackdrop({
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Header"
 })
-local RaitingRaidHeaderString = RaitingRaidHeader:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+local RaitingRaidHeaderString = RaitingRaidHeader:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 RaitingRaidHeaderString:SetPoint("CENTER", RaitingRaidHeader, "CENTER", 0, 12)
 RaitingRaidHeaderString:SetText("Рейтинг гильдии")
+RaitingRaidHeaderString:SetFont("Fonts\\ARIALN.TTF", 12)
 
 -- RatingFrame:SetMovable(true)
 RatingFrame:EnableMouse(true)
@@ -353,7 +379,8 @@ eb = CreateFrame("Editbox", nil, scrollFrame)
 eb:SetMultiLine(true)
 eb:SetFontObject(GameFontHighlightSmall)
 eb:SetAutoFocus(false)
-eb:SetWidth(230)
+eb:SetWidth(270)
+eb:SetFont("Fonts\\ARIALN.TTF", 11)
 scrollFrame:SetScrollChild(eb)
 --конец фрейма
 
@@ -375,9 +402,9 @@ function GTDA_GetListRaiting()
   local players = {}
 	local textRating = ""
 
-	RatingFrame:SetPoint("TOPLEFT", Frame1, -265, 0)
-	RatingFrame:SetWidth(270)
-	RatingFrame:SetHeight(Frame1:GetHeight() - 13)
+	RatingFrame:SetPoint("TOPLEFT", Frame1, -295, 0)
+	RatingFrame:SetWidth(300)
+	RatingFrame:SetHeight(Frame1:GetHeight() - 10)
 		
 	for y = 1, GetNumGuildMembers(1) do
 		local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(y);
