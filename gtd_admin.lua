@@ -12,33 +12,39 @@ local nicknameChanges = {} -- таблица автозамен заполняе
 --nicknameChanges["FromCharacter"] = {main = "ToCharacter", status = nil, raidAnno = true}--для отладки
 --nicknameChanges["Karatelb"] = {main = "Konstant", status = nil, raidAnno = true}--для отладки
 --//конец блока записи замен
-GTD_NAME_ADDON = "gtd_admin"
+GTDA_NAME_ADDON = "gtd_admin"
 GlobalOperation = ""
 SortField = "pp"--сортировка по умолчанию по progress-points
 AccessInstances = {}
 LastEnteredValue = 0
 local StrOptionYes = "да"
 local StrOptionNo = "нет"
-local GTD_VERSION = "1.0.3"
+local GTDA_VERSION = "1.0.7"
 
-GTD_GLOBALS = CreateFrame("Frame")
-GTD_GLOBALS:RegisterEvent("ADDON_LOADED")
-GTD_GLOBALS:SetScript("OnEvent", function()
-    if event then
-        DEFAULT_CHAT_FRAME:AddMessage(arg1)
-        if event == 'ADDON_LOADED' and arg1 == 'gtd_admin' then            
-            return GTDR_GLOBALS.init()
+GTDA_GLOBALS = CreateFrame("Frame")
+GTDA_GLOBALS:RegisterEvent("ADDON_LOADED")
+GTDA_GLOBALS:SetScript("OnEvent", function()
+    if event then        
+        if event == 'ADDON_LOADED' and arg1 == 'gtd_admin' then           		       
+            return GTDA_GLOBALS.init()
         end
     end    
 end)
 
-function GTD_GLOBALS.init()
-	DEFAULT_CHAT_FRAME:AddMessage(GTD_NAME_ADDON.." loaded.")
-	local countAdded = GTD_START_COUNT_ADDED_PP or 0
-	local addedPP = GTD_ADDED_PP_RAID_SESSION or 0
-	gtd_StartCountAddedPP:SetText(tostring(countAdded))
-	gtd_StartCountAddedPP:SetText(tostring(GTD_START_COUNT_ADDED_PP))
+function GTDA_GLOBALS.init()
+	DEFAULT_CHAT_FRAME:AddMessage(GTDA_NAME_ADDON.." loaded.")
+	GTDA_StartCountAddedPP:SetText(tostring(GTDA_START_COUNT_ADDED_PP or 0))
+	GTDA_AddedPpRaidSession:SetText(tostring(GTDA_ADDED_PP_RAID_SESSION or 0))
 end
+
+function GTDA_ClearCountPP()
+	GTDA_START_COUNT_ADDED_PP = 0 
+	GTDA_ADDED_PP_RAID_SESSION	= 0
+	GTDA_StartCountAddedPP:SetText(tostring(GTDA_START_COUNT_ADDED_PP))
+	GTDA_AddedPpRaidSession:SetText(tostring(GTDA_ADDED_PP_RAID_SESSION))
+	DEFAULT_CHAT_FRAME:AddMessage("[gtd_admin]: Была удалена инф. о начислениях и пп за весь рейд!", 0,1,1)
+end
+
 
 StaticPopupDialogs["CONFIRM_ADD"] = {	
 	text =  "|cffa5ffb4Внести указанное количество progress-points|r `|cff00ff7f%s|r` |cffa5ffb4?|r",
@@ -68,22 +74,22 @@ StaticPopupDialogs["CONFIRM_REMOTE"] = {
 
 function Frame1_OnLoad()
 	--установим массив разрешенных зон для проверки прогресс-рола, где ключ индекс и значение = название текущей локации
-	GTD_SetZones()	
-	local version = " |cffffffffv." .. GTD_VERSION .. "|r"
+	GTDA_SetZones()	
+	local version = " |cffffffffv." .. GTDA_VERSION .. "|r"
 	gtdMainTitle:SetText(gtdMainTitle:GetText() .. version)
 	SLASH_GTD1 = "/gtd";	
 	SlashCmdList["GTD"] = function(msg)		
 		GTDA_StartSettings()
 		if msg == "help" then
-			GTD_Help();		
+			GTDA_Help();		
 		else
-			GTD_customOperation(msg)				
+			GTDA_customOperation(msg)				
 		end
 	end
 end
 
 function HelpButton_OnClick()
-	GTD_Help();
+	GTDA_Help();
 end
 
 function ToInteger(number)
@@ -91,7 +97,7 @@ function ToInteger(number)
 end
 
 function Button1_OnClick(operation)	
-	GTD_setStatusesOfNil();
+	GTDA_setStatusesOfNil();
 	foundRewritesChanges = {}
 	GlobalOperation = operation;
 	local enteredValue = EnteredValue:GetNumber()
@@ -102,7 +108,7 @@ function Button1_OnClick(operation)
     if _getNumRaidMembers == 0 then
 		print("Вы не в рейде!")
 	elseif enteredName ~= "" then
-		GTD_insertPointOneUser(enteredValue, enteredName, operation)
+		GTDA_insertPointOneUser(enteredValue, enteredName, operation)
 	else
 		for y = 1, GetNumGuildMembers(1) do
 			local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(y);
@@ -111,7 +117,7 @@ function Button1_OnClick(operation)
 				local unit = 'raid' .. i;
 				local who = UnitName(unit);
 				
-				who = GTD_usersChanges(who); --автозамена игрока на мейна в гильдии		
+				who = GTDA_usersChanges(who); --автозамена игрока на мейна в гильдии		
 
 				if who == name then
 					
@@ -138,8 +144,10 @@ function Button1_OnClick(operation)
 			local _curText = ""	
 			if operation == "add" then				
 				_curText = GTDA_GetTextAnnoAddedPP(enteredValue)
-				GTD_START_COUNT_ADDED_PP = GTD_START_COUNT_ADDED_PP + 1
-				gtd_StartCountAddedPP:SetText(GTD_START_COUNT_ADDED_PP)
+				GTDA_START_COUNT_ADDED_PP = tonumber(GTDA_START_COUNT_ADDED_PP or 0) + 1
+				GTDA_ADDED_PP_RAID_SESSION = tonumber(GTDA_ADDED_PP_RAID_SESSION or 0) + enteredValue
+				GTDA_StartCountAddedPP:SetText(tostring(GTDA_START_COUNT_ADDED_PP))
+				GTDA_AddedPpRaidSession:SetText(tostring(GTDA_ADDED_PP_RAID_SESSION))
 			elseif operation == "remote" then
 				_curText = "У всех кто в рейде списывается " .. enteredValue .. " progress-point!";		
 			end			
@@ -191,8 +199,8 @@ function GTDA_AnnoRewritesPP(typeRaidChat)
 	end
 end
 
-function GTD_Help()
-	DEFAULT_CHAT_FRAME:AddMessage("Аддон `gtd_admin` гильдии Going to Death. Предназначен для внесения progress-points за убийство босса, закрытие рейда или еще какую-нибудь активность.",1,1,0);
+function GTDA_Help()
+	DEFAULT_CHAT_FRAME:AddMessage("Аддон `GTDA_admin` гильдии Going to Death. Предназначен для внесения progress-points за убийство босса, закрытие рейда или еще какую-нибудь активность.",1,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("Список команд:",0,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("/gtd - открытие или закрытие окна админки.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/gtd help - вызов справки.",1,1,1);
@@ -203,7 +211,7 @@ function GTD_Help()
 end
 --замена альта ника игрока на ник игрока мейна (должен быть в гильдии)
 --для получения PP мейну вместо идущего альта.
-function GTD_usersChanges(nickname)	
+function GTDA_usersChanges(nickname)	
 	local _anno = "";	
 	for i, val in pairs(nicknameChanges) do			
 		if i == nickname then			
@@ -227,19 +235,19 @@ end
 
 --обнуляем информацию о рассылке анонса о заменах
 --status = nil означает, что рассылка не была. это нужно для повторного анонса о заменах при следующих записях
-function GTD_setStatusesOfNil()
+function GTDA_setStatusesOfNil()
 	for i, val in pairs(nicknameChanges) do	
 		nicknameChanges[i].status = nil
 	end
 end
 
-function GTD_customOperation(msg)	
+function GTDA_customOperation(msg)	
 	local _,_,cmd, args, unitname = string.find(msg, "%s?(%a+)%s?(%d+)%s?(.*)")		
 	if cmd == "decay" and tonumber(args) ~= nil then
-		GTD_Decay(args)
+		GTDA_Decay(args)
 	elseif tonumber(args) ~= nil and unitname ~= "" then
 		if cmd == "add" or cmd == "remote" then
-			GTD_insertPointOneUser(args, unitname, cmd)		
+			GTDA_insertPointOneUser(args, unitname, cmd)		
 		end		
 	elseif (cmd == "add" or cmd == "remote") and tonumber(args) ~= nil then
 		print("Не хватает имени игрока. /gtd ".. cmd .." " .. args .. " [имя_игрока]")		
@@ -266,11 +274,11 @@ function GTDA_SetNameFromTarget()
 end
 
 --функция для ввода ПП только одному игроку. через поле: `Имя`
-function GTD_insertPointOneUser(enteredValue, enteredName, operation)
+function GTDA_insertPointOneUser(enteredValue, enteredName, operation)
 	GlobalOperation = operation
 	
 	--автозамена
-	enteredName = GTD_usersChanges(enteredName)
+	enteredName = GTDA_usersChanges(enteredName)
 	
 	local _isModifyNote = 0
 	for y = 1, GetNumGuildMembers(1) do
@@ -317,7 +325,7 @@ function GTD_insertPointOneUser(enteredValue, enteredName, operation)
 end
 
 --возвращает очки игроку после списания в процентах (procents)
-function GTD_CalcDecayPlayer(procents, officerNote)  
+function GTDA_CalcDecayPlayer(procents, officerNote)  
   local _getInteger = tonumber(string.format("%.0f", officerNote))
   local _getFloat = tonumber(officerNote) - _getInteger
   local _getDecay = _getInteger - (_getInteger / 100 * procents)
@@ -325,13 +333,13 @@ function GTD_CalcDecayPlayer(procents, officerNote)
 end
 
 --списание по декей у всей гильдии
-function GTD_Decay(procents)
+function GTDA_Decay(procents)
 	local _count = 0	
 	for y = 1, GetNumGuildMembers(1) do
 		local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(y);
 		
 		if level == 60 and type(tonumber(officernote)) == "number" then
-			GuildRosterSetOfficerNote(y, GTD_CalcDecayPlayer(procents,officernote))
+			GuildRosterSetOfficerNote(y, GTDA_CalcDecayPlayer(procents,officernote))
 			_count = _count + 1
 		end
 	end
@@ -396,7 +404,7 @@ end
 
 --формирование данный рейтинга игроков гильдии
 function GTDA_GetListRaiting()
-	local formula = GTD_GetDigitsF()
+	local formula = GTDA_GetDigitsF()
 	local f, _, _ = GameFontNormal:GetFont() 	
   local tempPlayers = {}
   local players = {}
@@ -452,7 +460,7 @@ end
 --получаем числа для формулы рола из гильдейской информации
 --правило записиси: на отдельной строке :0.5,0.25
 --в итоге получаем массив с ключами: [1] = 0.5, [2] = 0.25
-function GTD_GetDigitsF()
+function GTDA_GetDigitsF()
   local i = GetGuildInfoText()    
   if i then
     if i == "" then
@@ -470,7 +478,7 @@ function GTD_GetDigitsF()
   end
 end
 
-function GTD_Split(inputstr, sep)  
+function GTDA_Split(inputstr, sep)  
   if sep == nil then
     sep = "%s"
   end
@@ -495,7 +503,7 @@ local _allZones = {
 		"Tower of Karazhan" -- 9 кара-40
 	}
 
-function GTD_SetZones()
+function GTDA_SetZones()
   if table.getn(AccessInstances) > 0 then  	
   	return false	
 	end
@@ -514,7 +522,7 @@ function GTD_SetZones()
    				return nil
   			end
 			end
-	  	local _asd = GTD_Split(_ids,",")
+	  	local _asd = GTDA_Split(_ids,",")
 		  local _countArray = table.getn(_asd)
 		  for x = 1, _countArray do	  	 	
 		   	table.insert(AccessInstances, _allZones[tonumber(_asd[x])])	  	 	
@@ -524,7 +532,7 @@ function GTD_SetZones()
 end
 
 --булевая проверка текущей локации из разрешенного массива локаций
-function GTD_IsZone()
+function GTDA_IsZone()
 	local _accessInstances = AccessInstances		
 	for x = 1, table.getn(_accessInstances) do		
 		if _accessInstances[x] == GetRealZoneText() then
@@ -541,11 +549,11 @@ local f = CreateFrame("frame")
 f:RegisterEvent("CHAT_MSG_SYSTEM")
 f:SetScript("OnEvent", function()
 	if event == "CHAT_MSG_SYSTEM" then
-		GTD_SetZones()
+		GTDA_SetZones()
 
-		if GTD_IsZone() then   
+		if GTDA_IsZone() then   
 
-			local _digits  = GTD_GetDigitsF()
+			local _digits  = GTDA_GetDigitsF()
 			local _message = arg1
 			local _, _, _author, _rollResult, _rollMin, _rollMax = string.find(_message, "(.+) rolls (%d+) %((%d+)-(%d+)%)")
 
@@ -587,7 +595,7 @@ function GTDA_GetTextAnnoAbuse(rollmin, rollmax, raider, getmin, getmax)
 	return "|cFFff3939 Интервал рола: " .. rollmin .. "-" .. rollmax .. "|r |cFFff8686 не соотв. для игрока `".. raider .."`. Его доступный диапазон по PP:|r |cFFFFFFFF".. getmin .. "-" .. getmax .."|r"
 end
 
-local function GTD_GetItemLinkData(unitID, slotId)	
+local function GTDA_GetItemLinkData(unitID, slotId)	
 	local itemLink = nil
 	if (unitID == nil) then
 		itemLink = GetInventoryItemLink("player", slotId)
@@ -602,14 +610,14 @@ local function GTD_GetItemLinkData(unitID, slotId)
 end
 
 --проверка плаща Ониксии на рейдерах
-function GTD_OSC(wisp)
+function GTDA_OSC(wisp)
 	local _backName = "Onyxia Scale Cloak";
   local _log = "|cFFFF8080Проверка рейда на плащ Ониксии...|r\r"
   
   for i = 1, GetNumRaidMembers() do
 		local unit = 'raid' .. i;
 		local who = UnitName(unit);		
-		local itemName, itemLink, enchantId  = GTD_GetItemLinkData(unit, 15)		
+		local itemName, itemLink, enchantId  = GTDA_GetItemLinkData(unit, 15)		
 		if itemName ~= _backName and itemLink then
 			_log = _log  .. "|cFFFFFF00" .. who .. "|r" .. " одет: " .. tostring(itemLink) .. ", "
 		end
@@ -691,7 +699,7 @@ local BossName = ""
 
 --проверка на то, что босс является именно тем, кто нам нужен
 --возврат булева значения
-function GTD_CheckTarget()  
+function GTDA_CheckTarget()  
   if ListBosses[GetRealZoneText()] ~= nil and  table.getn(ListBosses[GetRealZoneText()]) > 0 then
 	  for i = 1, GetNumRaidMembers() do
 	    local _target = UnitName("Raid" .. i .. "target");
@@ -711,7 +719,7 @@ local Status = nil
 local uic = CreateFrame("frame")
 uic:RegisterEvent("UNIT_COMBAT")
 uic:SetScript("OnEvent", function()		  	
-  if event == "UNIT_COMBAT" and GTD_CheckTarget() and not Status then  	
+  if event == "UNIT_COMBAT" and GTDA_CheckTarget() and not Status then  	
   	--DEFAULT_CHAT_FRAME:AddMessage("Евент1: " .. event)
   	Status = "start"  	 	
   end 	
@@ -805,3 +813,15 @@ function GTDA_DebugOfWispers()
 	end
 end
 
+function GTDA_GLOBALS.GTDA_ButtonRollOnLoad(text, this)	
+	GameTooltip:SetOwner(this, "ANCHOR_CURSOR");   
+  if text then
+  	GameTooltip:SetText(text, 1,1,1,0.75)  
+	end
+  this:SetFont("Fonts\\ARIALN.TTF", 10)
+  GameTooltip:Show()
+end
+
+function GTDA_GLOBALS.GTDA_ButtonRollOnLeave()
+	 GameTooltip:Hide() 
+end

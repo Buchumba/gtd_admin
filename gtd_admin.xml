@@ -80,28 +80,28 @@
 					</Anchors>					
 					
 				</FontString>
-				<FontString name="gtd_StartCountAddedPP" inherits="gtdFont" text="">
+				<FontString name="GTDA_StartCountAddedPP" inherits="gtdFont" text="">
 					<Size x="50" y="20" />
 					<Anchors>
 						<Anchor point="CENTER">
-							<Offset x="-8" y="0" />
+							<Offset x="-8" y="12" />
 						</Anchor>
-					</Anchors>	
+					</Anchors>						
 				</FontString>
 				<FontString inherits="gtdFont" text="\">
 					<Size x="50" y="20" />
 					<Anchors>
 						<Anchor point="CENTER">
-							<Offset x="0" y="0" />
+							<Offset x="0" y="12" />
 						</Anchor>
 					</Anchors>					
 					
 				</FontString>
-				<FontString name="gtd_AddedPpRaidSession" inherits="gtdFont" text="">
+				<FontString name="GTDA_AddedPpRaidSession" inherits="gtdFont" text="">
 					<Size x="50" y="20" />
 					<Anchors>
 						<Anchor point="CENTER">
-							<Offset x="6" y="0" />
+							<Offset x="6" y="12" />
 						</Anchor>
 					</Anchors>					
 					
@@ -289,8 +289,14 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						GTD_START_COUNT_ADDED_PP, GTD_ADDED_PP_RAID_SESSION	= 0					
+						GTDA_ClearCountPP()										
 					</OnClick>
+					<OnEnter>
+						GTDA_GLOBALS.GTDA_ButtonRollOnLoad("Очистить лог-инфо за эту сессию.", this)
+					</OnEnter>
+					<OnLeave>
+						GTDA_GLOBALS.GTDA_ButtonRollOnLeave()
+					</OnLeave>					
 				</Scripts>
 			</Button>
 			<Button inherits="UIPanelButtonTemplate" text="Как выглядят Wisp?">
@@ -309,6 +315,28 @@
 					<OnClick>
 						GTDA_DebugOfWispers()     
 					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button inherits="UIPanelButtonTemplate" text="?">
+				<ButtonText font="Fonts\ARIALN.TTF">
+					<FontHeight>
+						<AbsValue val="10" />
+					</FontHeight>
+				</ButtonText>
+				<Size x="20" y="20" />
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset x="0" y="-7" />
+					</Anchor>
+				</Anchors>
+				<Scripts>					
+					<OnEnter>
+						GTDA_GLOBALS.GTDA_ButtonRollOnLoad("MC: 10\\11\rBWL: 8\\17\rAQ40: 9\\19\rNaxx: 15\\46\rKara40: 9\\37", this)
+					</OnEnter>
+					<OnLeave>
+						GTDA_GLOBALS.GTDA_ButtonRollOnLeave()
+					</OnLeave>
 				</Scripts>
 			</Button>
 
