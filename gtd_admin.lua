@@ -10,7 +10,10 @@
 local foundRewritesChanges = {} -- найденые сопоставления автозамен
 local nicknameChanges = {} -- таблица автозамен заполняемая вручную
 --nicknameChanges["FromCharacter"] = {main = "ToCharacter", status = nil, raidAnno = true}--для отладки
---nicknameChanges["Karatelb"] = {main = "Konstant", status = nil, raidAnno = true}--для отладки
+--nicknameChanges["Stylet"] = {main = nil, status = nil, raidAnno = nil}--для отладки
+--nicknameChanges["Lavec"] = {main = nil, status = nil, raidAnno = nil}--для отладки
+--nicknameChanges["Andrgitdruid"] = {main = nil, status = nil, raidAnno = nil}--для отладки
+--nicknameChanges["Alladyn"] = {main = "Suprize", status = nil, raidAnno = true}--для отладки
 --//конец блока записи замен
 GTDA_NAME_ADDON = "gtd_admin"
 GlobalOperation = ""
@@ -19,7 +22,7 @@ AccessInstances = {}
 LastEnteredValue = 0
 local StrOptionYes = "да"
 local StrOptionNo = "нет"
-local GTDA_VERSION = "1.0.8"
+local GTDA_VERSION = "1.0.9"
 
 GTDA_GLOBALS = CreateFrame("Frame")
 GTDA_GLOBALS:RegisterEvent("ADDON_LOADED")
@@ -35,6 +38,8 @@ function GTDA_GLOBALS.init()
 	DEFAULT_CHAT_FRAME:AddMessage(GTDA_NAME_ADDON.." loaded.")
 	GTDA_StartCountAddedPP:SetText(tostring(GTDA_START_COUNT_ADDED_PP or 0))
 	GTDA_AddedPpRaidSession:SetText(tostring(GTDA_ADDED_PP_RAID_SESSION or 0))
+	-- Инициализация плавающей иконки
+	GTDA_CreateFloatingIcon()
 end
 
 function GTDA_ClearCountPP()
@@ -829,4 +834,55 @@ end
 
 function GTDA_GLOBALS.GTDA_ButtonRollOnLeave()
 	 GameTooltip:Hide() 
+end
+
+-- Функция создания перемещаемой иконки аддона
+function GTDA_CreateFloatingIcon()
+    local iconButton = CreateFrame("Button", "GTD_Admin_IconButton", UIParent)
+    iconButton:SetWidth(32)
+    iconButton:SetHeight(32)
+    iconButton:SetPoint("CENTER", UIParent, "CENTER")
+    iconButton:SetMovable(true)
+    iconButton:EnableMouse(true)
+    iconButton:RegisterForDrag("LeftButton")
+
+    -- Назначаем текстуру (путь к вашему tga файлу)
+    local iconTexture = iconButton:CreateTexture(nil, "BACKGROUND")
+    iconTexture:SetAllPoints(iconButton)
+    --iconTexture:SetTexture("Interface\\AddOns\\gtd_admin\\icon.tga")
+    iconTexture:SetTexture("Interface\\Icons\\INV_Misc_Book_09")
+    -- Логика перетаскивания (Vanilla 1.12.1)
+    iconButton:SetScript("OnDragStart", function()
+        this:StartMoving()
+    end)
+
+    iconButton:SetScript("OnDragStop", function()
+        this:StopMovingOrSizing()
+    end)
+
+    -- Логика клика (открытие/закрытие Frame1 и RatingFrame)
+    iconButton:SetScript("OnClick", function()
+        if Frame1:IsShown() then 
+            Frame1:Hide()
+            if RatingFrame and RatingFrame:IsShown() then
+                RatingFrame:Hide()
+            end
+        else 
+            Frame1:Show()
+        end
+    end)
+
+    -- Логика появления тултипа при наведении курсора
+    iconButton:SetScript("OnEnter", function()
+        -- Привязываем тултип к нашей иконке, указываем появление слева (ANCHOR_LEFT)
+        GameTooltip:SetOwner(this, "ANCHOR_LEFT") 
+        -- Устанавливаем текст и цвет (1, 1, 1 - белый, можно сделать 1, 0.82, 0 - золотой)
+        GameTooltip:SetText("GTDRoll Admin", 1, 0.82, 0) 
+        GameTooltip:Show()
+    end)
+
+    -- Логика скрытия тултипа, когда курсор убран
+    iconButton:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+    end)
 end
